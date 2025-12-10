@@ -403,50 +403,57 @@
       <!-- 右：メールフォーム -->
       <div class="contact-form-wrapper">
         <h2 class="contact-form-title">メールフォーム</h2>
-        <!-- mailto でメールクライアントを起動 -->
-        <form
-          action="mailto:e.nagai@ink-production.info"
-          method="post"
-          enctype="text/plain"
-        >
+        <!-- JS で mailto を組み立ててメールクライアントを起動 -->
+        <form action="javascript:void(0);" method="post">
           <div class="form-row">
-            <label for="name">お名前 / ご担当者名</label>
-            <input type="text" id="name" name="お名前" required>
+            <label for="contact-name">お名前 / ご担当者名</label>
+            <input type="text" id="contact-name" name="お名前" required>
           </div>
 
           <div class="form-row">
-            <label for="company">会社名 / 団体名（任意）</label>
-            <input type="text" id="company" name="会社名">
+            <label for="contact-company">会社名 / 団体名（任意）</label>
+            <input type="text" id="contact-company" name="会社名">
           </div>
 
           <div class="form-row">
-            <label for="email">メールアドレス</label>
-            <input type="email" id="email" name="メールアドレス" required>
+            <label for="contact-email">メールアドレス</label>
+            <input type="email" id="contact-email" name="メールアドレス" required>
           </div>
 
           <div class="form-row">
-            <label for="tel">お電話番号（任意）</label>
-            <input type="text" id="tel" name="電話番号">
+            <label for="contact-phone">お電話番号（任意）</label>
+            <input type="text" id="contact-phone" name="電話番号">
           </div>
 
           <div class="form-row">
-            <label for="subject">ご用件</label>
-            <input type="text" id="subject" name="件名" placeholder="例：Webサイト制作の相談" required>
+            <label for="contact-subject">ご用件</label>
+            <input
+              type="text"
+              id="contact-subject"
+              name="件名"
+              placeholder="例：Webサイト制作の相談"
+              required
+            >
           </div>
 
           <div class="form-row">
-            <label for="message">お問い合わせ内容</label>
-            <textarea id="message" name="お問い合わせ内容" required></textarea>
+            <label for="contact-message">お問い合わせ内容</label>
+            <textarea id="contact-message" name="お問い合わせ内容" required></textarea>
             <div class="form-help">
               希望される内容・スケジュール感・ご予算イメージなどがあれば、可能な範囲でご記入ください。
             </div>
           </div>
 
-          <!-- メールの件名を固定で付けたい場合 -->
+          <!-- メールのタイトルを固定で残しておきたい場合の情報（JS側の subject と併用） -->
           <input type="hidden" name="メールタイトル" value="iNK PRODUCTION サイトからのお問い合わせ">
 
           <div class="submit-row">
-            <button type="submit" class="btn hover-target" style="width:100%;">
+            <button
+              type="button"
+              id="contact-submit"
+              class="btn hover-target"
+              style="width:100%;"
+            >
               メールソフトを開いて送信する
             </button>
           </div>
@@ -479,6 +486,36 @@
       target.addEventListener('mouseenter', () => cursor.classList.add('active'));
       target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
     });
+
+    // メール送信（mailto）組み立て
+    const submitButton = document.getElementById('contact-submit');
+    if (submitButton) {
+      submitButton.addEventListener('click', () => {
+        const name = document.getElementById('contact-name').value || '';
+        const company = document.getElementById('contact-company').value || '';
+        const email = document.getElementById('contact-email').value || '';
+        const phone = document.getElementById('contact-phone').value || '';
+        const subjectInput = document.getElementById('contact-subject').value || '';
+        const message = document.getElementById('contact-message').value || '';
+
+        const subject = subjectInput || 'お問い合わせ';
+
+        const body =
+          `お名前：${name}\n` +
+          `会社名：${company}\n` +
+          `メールアドレス：${email}\n` +
+          `電話番号：${phone}\n\n` +
+          `----- お問い合わせ内容 -----\n` +
+          `${message}\n`;
+
+        const mailto =
+          'mailto:e.nagai@ink-production.info' +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+
+        window.location.href = mailto;
+      });
+    }
   </script>
 </body>
 </html>

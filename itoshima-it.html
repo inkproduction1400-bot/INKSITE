@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>糸島のIT制作・Webシステム開発 | iNK PRODUCTION</title>
+
+  <!-- SEO -->
+  <meta name="description" content="糸島を拠点にWebサイト制作・Webシステム開発・業務ツール開発を行うiNK PRODUCTION。地元企業・店舗・スタートアップのデジタル制作パートナーとして、企画からデザイン・実装・運用まで一気通貫でサポートします。">
+  <link rel="canonical" href="https://inkproduction1400-bot.github.io/INKSITE/itoshima-it.html">
+
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="糸島のIT制作・Webシステム開発 | iNK PRODUCTION">
+  <meta property="og:description" content="糸島を拠点にWebサイト制作・Webシステム開発・業務ツール開発を行うiNK PRODUCTION。地元企業・店舗・スタートアップのデジタル制作パートナー。">
+  <meta property="og:url" content="https://inkproduction1400-bot.github.io/INKSITE/itoshima-it.html">
+  <meta property="og:site_name" content="iNK PRODUCTION">
+  <meta property="og:image" content="https://inkproduction1400-bot.github.io/INKSITE/img/ogp.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="img/favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #F0F0F0;
+      --black: #0f0f0f;
+      --white: #ffffff;
+      --yellow: #FFE800;
+      --pink: #FF4D8C;
+      --cyan: #00F0FF;
+      --lime: #CCFF00;
+      --purple: #9D4EDD;
+      --border: 3px solid var(--black);
+      --shadow: 6px 6px 0px var(--black);
+      --shadow-hover: 10px 10px 0px var(--black);
+    }
+
+    * {
+      box-sizing: border-box;
+      cursor: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(var(--black) 1px, transparent 1px);
+      background-size: 30px 30px;
+      color: var(--black);
+      font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Archivo Black', sans-serif;
+      text-transform: uppercase;
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .cursor {
+      width: 20px;
+      height: 20px;
+      background: var(--black);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor.active {
+      width: 80px;
+      height: 80px;
+      background: var(--white);
+      mix-blend-mode: difference;
+    }
+
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--purple);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+    }
+    .loader.hidden {
+      transform: translateY(-100%);
+    }
+    .loader-text {
+      font-family: 'Archivo Black';
+      font-size: 5vw;
+      animation: pulse 0.5s infinite alternate;
+      text-transform: none;
+      color: var(--white);
+    }
+    @keyframes pulse { to { opacity: 0.5; } }
+
+    .btn {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      padding: 15px 40px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      font-size: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.1s;
+      text-align: center;
+    }
+    .btn:hover {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    header {
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      background: var(--white);
+      border: var(--border);
+      padding: 5px 20px;
+      box-shadow: var(--shadow);
+      text-transform: none;
+    }
+    nav {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .nav-link {
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--black);
+      padding: 8px 14px;
+      background: var(--white);
+      border: 2px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      font-size: 0.9rem;
+      transform: rotate(-2deg);
+    }
+    .nav-link.active {
+      background: var(--yellow);
+    }
+
+    .sub-hero-wrapper {
+      padding: 40px 20px 20px;
+    }
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto 10px auto;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .breadcrumb span {
+      background: var(--white);
+      border: 2px solid var(--black);
+      padding: 4px 10px;
+      box-shadow: 3px 3px 0 var(--black);
+    }
+
+    .sub-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 30px 60px;
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sub-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.02) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      pointer-events: none;
+    }
+    .sub-hero-main {
+      position: relative;
+      z-index: 1;
+    }
+    .sub-hero-kicker {
+      display: inline-block;
+      background: var(--cyan);
+      color: var(--black);
+      border: 2px solid var(--black);
+      padding: 4px 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transform: rotate(-3deg);
+      box-shadow: 3px 3px 0 var(--black);
+      margin-bottom: 16px;
+    }
+    .sub-hero-title {
+      font-size: 2.6rem;
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+    .sub-hero-title span {
+      display: inline-block;
+      background: var(--yellow);
+      padding: 4px 8px;
+      transform: rotate(-2deg);
+      box-shadow: 4px 4px 0 var(--black);
+      margin-bottom: 0.25em;
+    }
+    .sub-hero-lead {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+    .sub-hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 2px solid var(--black);
+      background: var(--white);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .sub-hero-side {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .sub-hero-badge {
+      background: var(--pink);
+      border: var(--border);
+      padding: 6px 14px;
+      font-weight: 700;
+      transform: rotate(4deg);
+      box-shadow: var(--shadow);
+    }
+    .sub-hero-note {
+      font-size: 0.9rem;
+      background: var(--black);
+      color: var(--white);
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 260px;
+    }
+    .sub-hero-emoji {
+      font-size: 4rem;
+      filter: drop-shadow(5px 5px 0 var(--black));
+      transform: rotate(-8deg);
+    }
+
+    .section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-header {
+      margin-bottom: 40px;
+    }
+    .section-label {
+      display: inline-block;
+      background: var(--lime);
+      border: 2px solid var(--black);
+      padding: 4px 12px;
+      font-weight: 700;
+      transform: rotate(-3deg);
+      box-shadow: 3px 3px 0 var(--black);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 2.4rem;
+      background: var(--white);
+      display: inline-block;
+      padding: 8px 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      transform: rotate(1deg);
+    }
+    .section-lead {
+      margin-top: 16px;
+      font-size: 1rem;
+      max-width: 640px;
+      line-height: 1.8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .card {
+      background: var(--white);
+      border: var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    .card:hover {
+      transform: translate(-5px, -5px);
+      box-shadow: var(--shadow-hover);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.05) 10px,
+        rgba(0,0,0,0.05) 20px
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .card:hover::before { opacity: 1; }
+    .card-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .card-body {
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    .card-list {
+      margin: 12px 0 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 2px solid var(--black);
+      background: var(--yellow);
+      margin-bottom: 10px;
+    }
+
+    .layout-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 30px;
+      align-items: flex-start;
+    }
+    .note-box {
+      background: var(--white);
+      border: var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .cta-section {
+      padding: 80px 20px 100px;
+    }
+    .cta-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--black);
+      color: var(--white);
+      border: 3px solid var(--white);
+      box-shadow: 10px 10px 0 var(--black);
+      padding: 40px 30px;
+      text-align: center;
+      position: relative;
+    }
+    .cta-inner::after {
+      content: "ITOSIMA × DIGITAL × FUN";
+      position: absolute;
+      top: -18px;
+      left: 16px;
+      padding: 4px 12px;
+      background: var(--yellow);
+      border: 2px solid var(--black);
+      font-size: 0.8rem;
+      font-weight: 700;
+      transform: rotate(-3deg);
+      color: var(--black);
+    }
+    .cta-title {
+      font-size: 2.3rem;
+      margin-bottom: 12px;
+    }
+    .cta-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+      animation: fadeUp 0.5s ease-out;
+    }
+
+    @media (max-width: 900px) {
+      .sub-hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .sub-hero-side {
+        align-items: flex-start;
+      }
+      .layout-split {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      nav {
+        flex-wrap: wrap;
+      }
+      .sub-hero-title {
+        font-size: 2.2rem;
+      }
+      .section {
+        padding: 60px 16px;
+      }
+      .cta-inner {
+        padding: 32px 20px;
+      }
+      .cursor { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+
+  <div class="loader">
+    <div class="loader-text">iNK PRODUCTION</div>
+    <div style="margin-top:20px; font-weight:bold;">LOADING ITOSHIMA DIGITAL...</div>
+  </div>
+
+  <header>
+    <div class="logo hover-target">iNK PRODUCTION</div>
+    <nav>
+      <a href="index.html" class="nav-link hover-target">TOP</a>
+      <a href="service-web.html" class="nav-link hover-target active">WEB DESIGN</a>
+      <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+      <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+      <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+      <a href="science-lab.html" class="nav-link hover-target">SCIENCE LAB</a>
+    </nav>
+    <a href="contact.html" class="btn hover-target">CONTACT</a>
+  </header>
+
+  <div class="sub-hero-wrapper">
+    <div class="breadcrumb">
+      <span>TOP &gt; WEB DESIGN &gt; ITOSHIMA</span>
+    </div>
+
+    <section class="sub-hero reveal">
+      <div class="sub-hero-main">
+        <div class="sub-hero-kicker">LOCAL IT PRODUCTION / ITOSHIMA</div>
+        <h1 class="sub-hero-title">
+          糸島で<span>IT制作</span>と<br>
+          Webシステム開発を。
+        </h1>
+        <p class="sub-hero-lead">
+          糸島を拠点に、Webサイト・LP・予約システム・問い合わせ管理など、  
+          「ちゃんと成果につながる」IT制作をお手伝いします。<br>
+          デザインだけでなく、業務フローや運用方法までセットで考えることで、  
+          作って終わりではないデジタル環境を一緒につくっていきます。
+        </p>
+        <div class="sub-hero-tags">
+          <div class="pill"><span>🌊</span> 糸島ローカル対応</div>
+          <div class="pill"><span>💻</span> Webサイト制作</div>
+          <div class="pill"><span>🧩</span> 予約 / 問い合わせシステム</div>
+          <div class="pill"><span>📈</span> マーケティング設計</div>
+        </div>
+        <a href="#contact" class="btn hover-target">糸島から相談してみる</a>
+      </div>
+      <div class="sub-hero-side">
+        <div class="sub-hero-badge">
+          LOCAL × DIGITAL × FUN
+        </div>
+        <div class="sub-hero-emoji">
+          💾
+        </div>
+        <div class="sub-hero-note">
+          糸島市内・福岡市近郊の事業者さま向けに、  
+          オンライン / オフラインどちらでもお打ち合わせ可能です。
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- WHAT WE DO -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-label">WHAT WE DO</div>
+      <h2 class="section-title">糸島で提供しているIT制作</h2>
+      <p class="section-lead">
+        コーポレートサイトや採用サイト、予約・問い合わせフォーム付きのWebサイト、  
+        簡易な業務システムまで。  
+        「デザイン」と「使いやすさ」、そして「運用しやすさ」をバランスよく組み立てます。
+      </p>
+    </div>
+
+    <div class="grid">
+      <article class="card reveal hover-target" style="background-color:#E3F2FD;">
+        <div class="card-tag">01 WEBSITE</div>
+        <h3 class="card-title">コーポレートサイト / 店舗サイト制作</h3>
+        <div class="card-body">
+          事業内容・サービス・想いが伝わるWebサイトを、  
+          スマホファーストで設計します。
+          <ul class="card-list">
+            <li>TOPページ + 下層ページの構成設計</li>
+            <li>写真・テキストの整理とライティングサポート</li>
+            <li>お問い合わせフォーム / アクセス情報の実装</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card reveal hover-target" style="background-color:#FFF3E0;">
+        <div class="card-tag">02 LANDING PAGE</div>
+        <h3 class="card-title">キャンペーン / 採用向けLP制作</h3>
+        <div class="card-body">
+          広告やSNSからの誘導先となる、1ページ完結のランディングページを制作します。
+          <ul class="card-list">
+            <li>目的に合わせた構成・ストーリー設計</li>
+            <li>スマホでの読みやすさ・CV動線の最適化</li>
+            <li>計測用タグの設置（GA4 等）</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card reveal hover-target" style="background-color:#FCE4EC;">
+        <div class="card-tag">03 SYSTEM</div>
+        <h3 class="card-title">予約・申し込みフォーム / 管理画面</h3>
+        <div class="card-body">
+          予約・イベント申し込み・会員管理など、  
+          既存のスプレッドシートをベースにしたWebシステムを構築します。
+          <ul class="card-list">
+            <li>予約フォームとカレンダー連携</li>
+            <li>申込内容の自動集計・一覧表示</li>
+            <li>メール通知・リマインド機能の実装</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card reveal hover-target" style="background-color:#F1F8E9;">
+        <div class="card-tag">04 SUPPORT</div>
+        <h3 class="card-title">保守・運用 / コンテンツ更新サポート</h3>
+        <div class="card-body">
+          公開後の更新作業や、簡単なバナー・文章修正なども継続的にサポート可能です。
+          <ul class="card-list">
+            <li>月次の更新作業代行</li>
+            <li>アクセス解析レポートの共有</li>
+            <li>新規ページ追加・コンテンツ企画の相談</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- LOCAL -->
+  <section class="section" style="background:rgba(255,255,255,0.9);">
+    <div class="section-header">
+      <div class="section-label" style="background:var(--purple); color:#fff;">LOCAL ADVANTAGE</div>
+      <h2 class="section-title">糸島ローカルだからできること</h2>
+    </div>
+
+    <div class="layout-split">
+      <div class="note-box reveal">
+        <p>
+          糸島エリアで事業をされている方にとって、  
+          「ちょっと話をしたいときにすぐ相談できるITパートナー」でありたいと思っています。
+        </p>
+        <p style="margin-top:12px;">
+          オンラインだけでなく、必要に応じて対面のお打ち合わせも可能です。  
+          地域の状況やターゲット像を共有しながら、  
+          WebやITをどう活かすかを一緒に考えていきます。
+        </p>
+      </div>
+
+      <div class="note-box reveal">
+        <p style="font-weight:700; margin-bottom:8px;">こんなご相談も歓迎です</p>
+        <ul style="margin:0; padding-left:1.1rem; font-size:0.9rem; line-height:1.8;">
+          <li>既存のサイトをスマホで見やすくリニューアルしたい</li>
+          <li>予約や問い合わせの管理を、紙や電話からオンラインに移したい</li>
+          <li>SNSや広告と連動した、集客導線をつくりたい</li>
+          <li>今の運用を変えずに、少しずつデジタル化していきたい</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="contact" class="cta-section">
+    <div class="cta-inner reveal">
+      <h2 class="cta-title">糸島から始める、小さなIT制作パートナー。</h2>
+      <p class="cta-text">
+        「まずは名刺代わりの1ページサイトから」「予約フォームだけを作りたい」など、  
+        小さな一歩からのご相談も大歓迎です。<br>
+        事業のフェーズやご予算感に合わせて、  
+        いま無理なく始められる形をご提案します。
+      </p>
+      <a href="contact.html" class="btn hover-target">CONTACT FORM へ</a>
+    </div>
+  </section>
+
+  <footer>
+    <h2 style="font-size: 2rem; margin-bottom: 10px;">LET'S MAKE IT FUN FROM ITOSHIMA.</h2>
+    <p>© 2024 iNK PRODUCTION Inc.</p>
+  </footer>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.loader').classList.add('hidden');
+      }, 1200);
+    });
+
+    const cursor = document.querySelector('.cursor');
+    const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    hoverTargets.forEach(target => {
+      target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+      target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+    });
+
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.15 });
+    revealElements.forEach(el => revealObserver.observe(el));
+  </script>
+</body>
+</html>

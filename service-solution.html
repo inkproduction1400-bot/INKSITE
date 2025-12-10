@@ -682,6 +682,73 @@
             }
             .cursor { display: none; }
         }
+        /* ==== PRICING LINKS (related service) ==== */
+.pricing-links-box {
+  max-width: 900px;
+  margin: 40px auto 0;
+  padding: 20px 24px;
+  background: var(--white);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.pricing-links-label {
+  display: inline-block;
+  position: absolute;
+  top: -16px;
+  left: 16px;
+  padding: 4px 12px;
+  background: var(--yellow);
+  border: 2px solid var(--black);
+  font-size: 0.82rem;
+  font-weight: 700;
+  transform: rotate(-3deg);
+}
+
+.pricing-links-text {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.pricing-links-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pricing-link-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--black);
+  background: var(--lime);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--black);
+  box-shadow: 3px 3px 0 var(--black);
+  white-space: nowrap;
+}
+
+.pricing-link-chip span {
+  margin-left: 6px;
+  font-size: 0.85em;
+}
+
+/* SP */
+@media (max-width: 768px) {
+  .pricing-links-box {
+    margin-top: 28px;
+    padding: 18px 16px;
+  }
+  .pricing-links-chips {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
     </style>
     <script type="application/ld+json">
         {
@@ -900,67 +967,78 @@
     </section>
 
     <!-- SECTION: PRICING -->
-    <section class="section">
-        <div class="section-header">
-            <div class="section-label">PRICE IMAGE</div>
-            <h2 class="section-title">ご料金の目安</h2>
-            <p class="section-lead">
-                要件や連携サービスの数によって大きく変動しますが、  
-                初期相談・概算見積もりまでは無料で対応しています。
-            </p>
-        </div>
-
-        <div class="pricing-grid">
-            <div class="pricing-card reveal">
-                <div class="pricing-badge">まず試したい方向け</div>
-                <h3 class="pricing-title">ミニ自動化プラン</h3>
-                <p class="pricing-price">20〜40万円</p>
-                <ul class="pricing-list">
-                    <li>ノーコード / ローコード中心のフロー構築</li>
-                    <li>1〜2サービスとのAPI連携</li>
-                    <li>簡易マニュアル共有</li>
-                </ul>
-                <p class="pricing-note">
-                    例）問い合わせ自動振り分け、日次レポート自動生成 など
-                </p>
-            </div>
-
-            <div class="pricing-card reveal" style="transition-delay:0.08s;">
-                <div class="pricing-badge">しっかり業務システム</div>
-                <h3 class="pricing-title">業務アプリ開発プラン</h3>
-                <p class="pricing-price">80〜200万円</p>
-                <ul class="pricing-list">
-                    <li>専用Webアプリ / 管理画面の設計・実装</li>
-                    <li>ログイン・権限管理・基本的なログ取得</li>
-                    <li>1〜3ヶ月程度の開発期間目安</li>
-                </ul>
-                <p class="pricing-note">
-                    例）予約・案件管理システム、マッチング管理ツール など
-                </p>
-            </div>
-
-            <div class="pricing-card reveal" style="transition-delay:0.16s;">
-                <div class="pricing-badge">長期伴走</div>
-                <h3 class="pricing-title">継続改善プラン</h3>
-                <p class="pricing-price">月額 10〜30万円</p>
-                <ul class="pricing-list">
-                    <li>月次での機能追加・改善対応</li>
-                    <li>運用相談・仕様検討の壁打ち</li>
-                    <li>軽微な改善はスポットで即時反映</li>
-                </ul>
-                <p class="pricing-note">
-                    既存システムの継続改善や、新規事業の伴走に。
-                </p>
-            </div>
-            <p>
-                福岡でのAI業務自動化については
-                <a href="automation-fukuoka.html">AI業務自動化ソリューション（福岡）</a>、
-                糸島エリアのIT制作については
-                <a href="itoshima-it.html">糸島のIT制作サービス</a>
-                をご覧ください。
-              </p>              
-        </div>
-    </section>
+<section class="section">
+    <div class="section-header">
+      <div class="section-label">PRICE IMAGE</div>
+      <h2 class="section-title">ご料金の目安</h2>
+      <p class="section-lead">
+        要件や連携サービスの数によって大きく変動しますが、  
+        初期相談・概算見積もりまでは無料で対応しています。
+      </p>
+    </div>
+  
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-badge">まず試したい方向け</div>
+        <h3 class="pricing-title">ミニ自動化プラン</h3>
+        <p class="pricing-price">20〜40万円</p>
+        <ul class="pricing-list">
+          <li>ノーコード / ローコード中心のフロー構築</li>
+          <li>1〜2サービスとのAPI連携</li>
+          <li>簡易マニュアル共有</li>
+        </ul>
+        <p class="pricing-note">
+          例）問い合わせ自動振り分け、日次レポート自動生成 など
+        </p>
+      </div>
+  
+      <div class="pricing-card reveal" style="transition-delay:0.08s;">
+        <div class="pricing-badge">しっかり業務システム</div>
+        <h3 class="pricing-title">業務アプリ開発プラン</h3>
+        <p class="pricing-price">80〜200万円</p>
+        <ul class="pricing-list">
+          <li>専用Webアプリ / 管理画面の設計・実装</li>
+          <li>ログイン・権限管理・基本的なログ取得</li>
+          <li>1〜3ヶ月程度の開発期間目安</li>
+        </ul>
+        <p class="pricing-note">
+          例）予約・案件管理システム、マッチング管理ツール など
+        </p>
+      </div>
+  
+      <div class="pricing-card reveal" style="transition-delay:0.16s;">
+        <div class="pricing-badge">長期伴走</div>
+        <h3 class="pricing-title">継続改善プラン</h3>
+        <p class="pricing-price">月額 10〜30万円</p>
+        <ul class="pricing-list">
+          <li>月次での機能追加・改善対応</li>
+          <li>運用相談・仕様検討の壁打ち</li>
+          <li>軽微な改善はスポットで即時反映</li>
+        </ul>
+        <p class="pricing-note">
+          既存システムの継続改善や、新規事業の伴走に。
+        </p>
+      </div>
+    </div>
+  
+    <!-- プランカードの下に表示する内部リンクボックス -->
+    <div class="pricing-links-box reveal">
+      <div class="pricing-links-label">RELATED SERVICE</div>
+      <p class="pricing-links-text">
+        ニーズに合わせて、より詳しいサービス内容をまとめたページもご用意しています。
+      </p>
+      <div class="pricing-links-chips">
+        <a href="automation-fukuoka.html" class="pricing-link-chip hover-target">
+          AI業務自動化ソリューション（福岡）
+          <span>→</span>
+        </a>
+        <a href="itoshima-it.html" class="pricing-link-chip hover-target">
+          糸島のIT制作サービス
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>  
 
     <!-- CTA -->
     <section class="cta-section">

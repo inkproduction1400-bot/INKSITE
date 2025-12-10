@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | Future Science Lab - 親子で学べる科学教室</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* カスタムカーソル */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        /* ローディング */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--lime);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            text-transform: none;
+        }
+
+        /* 共通UI */
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* ヘッダー */
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none;
+        }
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        /* サブヒーロー */
+        .sub-hero-wrapper {
+            padding: 40px 20px 20px;
+        }
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto 10px auto;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .breadcrumb span {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 10px;
+            box-shadow: 3px 3px 0 var(--black);
+        }
+
+        .sub-hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sub-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.02),
+                rgba(0, 0, 0, 0.02) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            pointer-events: none;
+        }
+        .sub-hero-main {
+            position: relative;
+            z-index: 1;
+        }
+        .sub-hero-kicker {
+            display: inline-block;
+            background: var(--yellow);
+            color: var(--black);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 16px;
+        }
+        .sub-hero-title {
+            font-size: 3rem;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .sub-hero-title span {
+            display: inline-block;
+            background: var(--lime);
+            padding: 4px 8px;
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 var(--black);
+            margin-bottom: 0.3em;
+        }
+        .sub-hero-lead {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .sub-hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .sub-hero-side {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .sub-hero-badge {
+            background: var(--cyan);
+            border: var(--border);
+            padding: 6px 14px;
+            font-weight: 700;
+            transform: rotate(4deg);
+            box-shadow: var(--shadow);
+        }
+        .sub-hero-note {
+            font-size: 0.9rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 260px;
+        }
+        .sub-hero-actions {
+            display: flex;
+            flex-direction: column;   /* ここがポイント：縦並びにする */
+            gap: 12px;                /* ボタン同士の間隔 */
+            align-items: flex-start;  /* 左揃え */
+        }
+        .sub-hero-emoji {
+            font-size: 4.5rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            transform: rotate(-8deg);
+        }
+
+        /* セクション共通 */
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-label {
+            display: inline-block;
+            background: var(--lime);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 8px 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(1deg);
+        }
+        .section-lead {
+            margin-top: 16px;
+            font-size: 1rem;
+            max-width: 680px;
+            line-height: 1.8;
+        }
+
+        /* カード */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.05) 10px,
+                rgba(0,0,0,0.05) 20px
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .card-list {
+            margin: 12px 0 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        /* 2カラム説明（左右バランス調整） */
+        .two-column {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .note-box {
+            background: var(--white);
+            border: var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            height: 100%;
+        }
+
+        /* 教室写真ギャラリー：縦幅を控えめに */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+            grid-auto-rows: 140px; /* ここで高さを抑える */
+        }
+        .photo-card {
+            position: relative;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform: rotate(-2deg);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 100%;
+        }
+        .photo-card:nth-child(1) {
+            transform: rotate(-2deg);
+        }
+        .photo-card:nth-child(2) {
+            transform: rotate(2deg);
+        }
+        .photo-card:nth-child(3) {
+            transform: rotate(-1deg);
+        }
+        .photo-card:nth-child(4) {
+            transform: rotate(1.5deg);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .photo-card:hover {
+            transform: translate(-4px, -4px) rotate(0deg);
+            box-shadow: var(--shadow-hover);
+        }
+        .photo-caption {
+            font-size: 0.8rem;
+            margin-top: 10px;
+            opacity: 0.85;
+        }
+
+        /* インパクト */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+        .impact-item {
+            background: var(--white);
+            border: var(--border);
+            padding: 18px 18px 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+        }
+        .impact-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .impact-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* スポンサー プラン */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .pricing-card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            right: 16px;
+            background: var(--pink);
+            border: 2px solid var(--black);
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(5deg);
+        }
+        .pricing-title {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .pricing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .pricing-note {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        .pricing-list {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        /* FAQ */
+        .faq-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 18px 20px;
+        }
+        .faq-q {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .faq-a {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 80px 20px 100px;
+        }
+        .cta-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black);
+            color: var(--white);
+            border: 3px solid var(--white);
+            box-shadow: 10px 10px 0 var(--black);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .cta-inner::after {
+            content: "BECOME OUR SCIENCE PARTNER";
+            position: absolute;
+            top: -18px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--black);
+        }
+        .cta-title {
+            font-size: 2.3rem;
+            margin-bottom: 12px;
+        }
+        .cta-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        /* ミニCSR帯 */
+        .csr-mini {
+            background: var(--lime);
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+        .csr-mini-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .csr-mini-text {
+            max-width: 640px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .csr-mini-emoji {
+            font-size: 3rem;
+            filter: drop-shadow(3px 3px 0 var(--black));
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        @keyframes pulse { to { opacity: 0.5; } }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .sub-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sub-hero-side {
+                align-items: flex-start;
+            }
+            .two-column {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .sub-hero-title {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 60px 16px;
+            }
+            .cta-inner {
+                padding: 32px 20px;
+            }
+            .photo-grid {
+                grid-template-columns: minmax(0, 1fr);
+                grid-auto-rows: 160px;
+            }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- カスタムカーソル -->
+    <div class="cursor"></div>
+
+    <!-- ローディング -->
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">BOOTING FUTURE SCIENCE LAB...</div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header>
+        <div class="logo hover-target">iNK PRODUCTION</div>
+        <nav>
+            <a href="index.html" class="nav-link hover-target">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target">WEB DESIGN</a>
+            <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+            <a href="science-lab.html" class="nav-link hover-target active">SCIENCE LAB</a>
+        </nav>
+        <a href="#contact" class="btn hover-target">CONTACT</a>
+    </header>
+
+    <!-- サブヒーロー -->
+    <div class="sub-hero-wrapper">
+        <div class="breadcrumb">
+            <span>TOP &gt; CSR &gt; FUTURE SCIENCE LAB</span>
+        </div>
+
+        <section class="sub-hero reveal">
+            <div class="sub-hero-main">
+                <div class="sub-hero-kicker">CSR PROJECT</div>
+                <h1 class="sub-hero-title">
+                    <span>FUTURE SCIENCE LAB</span><br>
+                    親子で学べる科学教室
+                </h1>
+                <p class="sub-hero-lead">
+                    好奇心が爆発する瞬間を、もっと増やしたい。<br>
+                    小学生と保護者を対象にした、体験型の科学実験教室です。<br>
+                    「失敗しても大丈夫」を合言葉に、遊びながら学べるSTEAM体験を届けています。
+                </p>
+                <div class="sub-hero-tags">
+                    <div class="pill"><span>🧪</span> 小学生向け科学実験</div>
+                    <div class="pill"><span>👨‍👩‍👧‍👦</span> 親子参加型</div>
+                    <div class="pill"><span>🚀</span> STEAM / 探究学習</div>
+                    <div class="pill"><span>🤝</span> 地域連携 / CSR</div>
+                </div>
+                <div class="sub-hero-actions">
+                    <a href="#sponsor" class="btn hover-target">スポンサーとして参加する</a>
+                    <a href="https://www.kagakukoubou.com/"
+                       class="btn hover-target"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                      教室の公式HPはこちらから
+                    </a>
+                  </div>
+            </div>
+            <div class="sub-hero-side">
+                <div class="sub-hero-badge">
+                    POWERED BY CURIOUS KIDS
+                </div>
+                <div class="sub-hero-emoji">
+                    <img src="img/kagaku/kagaku.png" alt="Science Illustration">
+                </div>
+                <div class="sub-hero-note">
+                    「なんで？」と目を輝かせる子どもたちと、<br>
+                    その姿を見守る大人たちのための、小さな研究所です。
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- セクション：概要 -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">OVERVIEW</div>
+            <h2 class="section-title">科学教室の概要</h2>
+            <p class="section-lead">
+                Future Science Lab は、クリエイティブ会社である iNK PRODUCTION が行う社会貢献活動です。<br>
+                「正解を教える場」ではなく、「自分で試して、自分で発見する場」であることを大切にしています。
+            </p>
+        </div>
+
+        <div class="two-column">
+            <!-- 左カード：概要 ＋ 実施スタイル -->
+            <div class="note-box reveal">
+                <h3 style="font-size:1.2rem; margin-bottom:10px;">■ こんな科学教室です</h3>
+                <ul class="card-list">
+                    <li>対象：小学1〜6年生 ＋ 保護者</li>
+                    <li>形式：親子で一緒に手を動かすワークショップ型（1回あたり90〜120分）</li>
+                    <li>内容：身近な材料を使った科学実験＋クリエイティブなアウトプット</li>
+                    <li>目的：好奇心・探究心・表現力を育てる「きっかけ」をつくること</li>
+                </ul>
+                <p style="margin-top:16px;">
+                    科学の「難しい理屈」よりも、「やってみたらどうなるんだろう？」を重視。<br>
+                    うまくいっても、うまくいかなくても、そのプロセスごと楽しむプログラム設計です。
+                </p>
+
+                <h3 style="font-size:1.1rem; margin-top:24px; margin-bottom:8px;">■ 実施スタイルの一例</h3>
+                <ul class="card-list">
+                    <li>定員：1クラス 10〜20組 程度</li>
+                    <li>会場：地域の公共施設 / 企業のイベントスペース / 学校の教室 等</li>
+                    <li>頻度：不定期開催（年数回）＋ スポンサー企業とのコラボ回</li>
+                    <li>スタッフ：ファシリテーター＋サポートメンバー数名</li>
+                </ul>
+                <p style="margin-top:12px; font-size:0.9rem;">
+                    スポンサー企業さまのオフィスやイベントと組み合わせて、<br>
+                    オリジナル回として実施することも可能です。
+                </p>
+            </div>
+
+            <!-- 右カード：雰囲気＋写真 -->
+            <div class="note-box reveal" style="background:#FFFDE7;">
+                <h3 style="font-size:1.1rem; margin-bottom:8px;">■ 教室の雰囲気</h3>
+                <p style="font-size:0.95rem; margin-bottom:8px;">
+                    実際の開催風景の一部です。<br>
+                    子どもたちが前のめりで実験に取り組み、保護者も一緒に手を動かしている様子が伝わるような構成になっています。
+                </p>
+                <div class="photo-grid">
+                    <div class="photo-card">
+                        <img src="img/science/2.png" alt="科学教室の様子1">
+                    </div>
+                    <div class="photo-card">
+                        <img src="img/science/3.png" alt="科学教室の様子2">
+                    </div>
+                    <div class="photo-card">
+                        <img src="img/science/4.png" alt="科学教室の様子3">
+                    </div>
+                    <div class="photo-card">
+                        <img src="img/science/5.jpg" alt="科学教室の様子4">
+                    </div>
+                </div>
+                <p class="photo-caption">
+                    ※掲載している写真は、実際の開催回の一部です。会場やプログラム内容に応じてレイアウトは変わります。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション：プログラム例 -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--cyan);">PROGRAM</div>
+            <h2 class="section-title">主なプログラム例</h2>
+            <p class="section-lead">
+                毎回テーマを変えながら、「見る」「触る」「考える」を行き来する構成になっています。<br>
+                季節や開催場所に合わせて、カスタマイズも可能です。
+            </p>
+        </div>
+
+        <div class="grid">
+            <article class="card reveal hover-target" style="background:#E3F2FD;">
+                <div class="card-tag">01</div>
+                <h3 class="card-title">光るスライムのひみつ</h3>
+                <div class="card-body">
+                    ただのスライムづくりではなく、「なぜ固まる？」「なぜ光る？」を一緒に考える回。<br>
+                    実験 → 観察 → 自分なりの仮説 → 共有、という流れを楽しみます。
+                    <ul class="card-list">
+                        <li>ポリマーと架橋のイメージをやさしく解説</li>
+                        <li>色やラメを自由にカスタマイズ</li>
+                        <li>最後は自分だけの “研究メモ” を制作</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background:#FCE4EC; transition-delay:0.05s;">
+                <div class="card-tag">02</div>
+                <h3 class="card-title">空気ロケットで飛距離実験</h3>
+                <div class="card-body">
+                    紙と空気の力だけでロケットを飛ばし、「形」で飛び方がどう変わるかを検証します。
+                    <ul class="card-list">
+                        <li>ロケットの形状を親子で自由に設計</li>
+                        <li>発射台を使って実際に飛ばしてみる</li>
+                        <li>飛距離を測りながら改善 → 再チャレンジ</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background:#F1F8E9; transition-delay:0.1s;">
+                <div class="card-tag">03</div>
+                <h3 class="card-title">身近な材料で簡易電池づくり</h3>
+                <div class="card-body">
+                    レモン・コイン・導線などを使って発電に挑戦。<br>
+                    「電気が流れるってどういうこと？」を体感します。
+                    <ul class="card-list">
+                        <li>親子で回路を組み立ててライト点灯にチャレンジ</li>
+                        <li>つながり方による明るさの違いを実験</li>
+                        <li>身の回りの電気製品とのつながりを考える</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background:#FFF3E0; transition-delay:0.15s;">
+                <div class="card-tag">04</div>
+                <h3 class="card-title">「未来の教室」をデザインしよう</h3>
+                <div class="card-body">
+                    科学実験＋クリエイティブの回。<br>
+                    もし自分たちが「未来の教室」を作るなら？というテーマで、アイデアを形にしていきます。
+                    <ul class="card-list">
+                        <li>ホワイトボードや紙を使ったアイデアスケッチ</li>
+                        <li>簡単なプロトタイプづくり</li>
+                        <li>親子でプレゼンテーション体験</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- セクション：講師紹介 -->
+    <section class="section" style="background:#F5F4FF;">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--purple); color:#fff;">TEACHER</div>
+            <h2 class="section-title">講師（博士）紹介</h2>
+            <p class="section-lead">
+                Future Science Lab の実験監修・メイン講師を務めるのは、<br>
+                量子工学を専門とする「Dr.キーダ」こと來田歩（きだ あゆむ）博士です。
+            </p>
+        </div>
+
+        <div class="two-column">
+            <!-- 左：プロフィール写真 -->
+            <div class="note-box reveal" style="display:flex; flex-direction:column; align-items:center; text-align:center; background:#ffffff;">
+                <div style="width:220px; height:220px; border-radius:50%; overflow:hidden; border:4px solid var(--black); box-shadow:var(--shadow); margin-bottom:18px; background:#fff;">
+                    <img src="img/science/1.png" alt="Dr.キーダ（來田歩）" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <h3 style="font-size:1.3rem; margin-bottom:6px;">Dr.キーダ（來田 歩）</h3>
+                <p style="font-size:0.95rem; font-weight:700; margin-bottom:4px;">博士（工学） / 量子工学専攻</p>
+                <p style="font-size:0.85rem; margin-bottom:12px;">
+                    ニックネームは「Dr.ギータ」。<br>
+                    教室で見かけたら、ぜひ気軽に声をかけてください。
+                </p>
+                <div style="font-size:0.9rem; line-height:1.8; text-align:left; max-width:320px;">
+                    <p style="margin:0;"><strong>電話：</strong>070-6583-4138</p>
+                    <p style="margin:4px 0 0 0;"><strong>Eメール：</strong><a href="mailto:kayumu2017@gmail.com" style="color:inherit; text-decoration:underline;">kayumu2017@gmail.com</a></p>
+                    <p style="margin:4px 0 0 0;"><strong>住所：</strong>福岡県糸島市前原西4-5-28 よかとこラボ 208</p>
+                </div>
+            </div>
+
+            <!-- 右：紹介文 -->
+            <div class="note-box reveal" style="background:#FFFDE7;">
+                <h3 style="font-size:1.1rem; margin-bottom:10px;">■ 簡単な自己紹介</h3>
+                <p style="font-size:0.95rem; line-height:1.9; margin-bottom:10px;">
+                    名古屋大学 大学院 工学研究科にて量子工学を専攻し、1996年に博士号（工学）を取得。
+                    その後、大手メーカーの研究職として「面状感圧センサー」を発明し、特許を取得するなど、
+                    実社会につながる研究開発に長年携わってきました。
+                </p>
+                <p style="font-size:0.95rem; line-height:1.9; margin-bottom:10px;">
+                    現在は大学院での教育・研究活動と並行して、子どもから大人まで楽しめる科学教室を各地で開催しています。
+                    難しい数式よりも、「やってみたらどうなるんだろう？」という好奇心を大切にするスタイルが特徴です。
+                </p>
+                <p style="font-size:0.95rem; line-height:1.9;">
+                    教室や街で見かけたら、ぜひ「Dr.ギータ！」と気軽に声をかけてください。<br>
+                    未来の研究者やエンジニア、そして「科学を面白がれる大人」が一人でも増えることを願いながら、
+                    今日も実験と対話を続けています。科学教室でお会いできるのを楽しみにしています！
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション：インパクト / スポンサー価値 -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--pink);">IMPACT</div>
+            <h2 class="section-title">この活動で生まれるもの</h2>
+            <p class="section-lead">
+                子どもたちにとっては「科学との出会い」。<br>
+                保護者にとっては「子どもの新しい一面との出会い」。<br>
+                スポンサー企業さまにとっては、「次世代への投資」と「ブランドストーリー」です。
+            </p>
+        </div>
+
+        <div class="impact-grid">
+            <div class="impact-item reveal">
+                <div class="impact-number">#01</div>
+                <div class="impact-label">FOR KIDS</div>
+                <p>
+                    「やってみたい」「もっと知りたい」という感情を引き出し、<br>
+                    好奇心・探究心・自己表現のきっかけをつくります。
+                </p>
+            </div>
+            <div class="impact-item reveal" style="transition-delay:0.05s;">
+                <div class="impact-number">#02</div>
+                <div class="impact-label">FOR PARENTS</div>
+                <p>
+                    家ではなかなか準備できない実験や体験を、一緒に楽しめる場。<br>
+                    「子どもの得意かもしれない領域」に気づくきっかけにもなります。
+                </p>
+            </div>
+            <div class="impact-item reveal" style="transition-delay:0.1s;">
+                <div class="impact-number">#03</div>
+                <div class="impact-label">FOR SPONSORS</div>
+                <p>
+                    単なるロゴ露出ではなく、「未来の学びを応援する企業」としてのストーリーを持てます。<br>
+                    社内広報・採用ブランディングにも展開可能です。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション：スポンサー募集 -->
+    <section id="sponsor" class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--yellow);">SPONSORSHIP</div>
+            <h2 class="section-title">スポンサー募集について</h2>
+            <p class="section-lead">
+                Future Science Lab は、継続的な開催と、参加費の負担を抑えるために、<br>
+                一緒にこの活動を支えてくださるスポンサー企業・団体さまを募集しています。
+            </p>
+        </div>
+
+        <div class="two-column">
+            <div class="note-box reveal">
+                <h3 style="font-size:1.1rem; margin-bottom:10px;">■ スポンサーとしての主な関わり方</h3>
+                <ul class="card-list">
+                    <li>1回または複数回の開催に対する協賛</li>
+                    <li>自社オフィスやイベントでの「出張科学教室」共同開催</li>
+                    <li>オリジナルテーマ回（自社事業や業界に関係する内容）の共同企画</li>
+                </ul>
+                <p style="margin-top:16px; font-size:0.95rem;">
+                    詳細な金額や内容は、ご希望や開催規模に合わせて個別にご提案します。<br>
+                    下記はあくまでイメージとなるプランです。
+                </p>
+            </div>
+
+            <div class="note-box reveal" style="background:#E3F2FD;">
+                <h3 style="font-size:1.1rem; margin-bottom:10px;">■ スポンサーさまにご提供できること</h3>
+                <ul class="card-list">
+                    <li>当日の会場サイン・配布物・webサイト上でのロゴ掲出</li>
+                    <li>社内報・広報用の写真素材・レポートの提供</li>
+                    <li>共同プレスリリースや特設ページ制作の相談</li>
+                    <li>自社社員のボランティア参加など、社内参加の機会づくり</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- スポンサープラン例 -->
+        <div class="section" style="padding-top:50px; padding-bottom:0; max-width:1200px; margin:0 auto;">
+            <h3 style="font-size:1.4rem; margin-bottom:20px;">■ スポンサープラン例（イメージ）</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card reveal hover-target" style="background:#FFFDE7;">
+                    <div class="pricing-badge">SEED</div>
+                    <h4 class="pricing-title">Seed Sponsor</h4>
+                    <p class="pricing-price">¥100,000〜</p>
+                    <ul class="pricing-list">
+                        <li>1回分の科学教室開催への協賛</li>
+                        <li>参加者向け配布物へのロゴ掲出</li>
+                        <li>公式サイト・SNSでのご紹介</li>
+                    </ul>
+                    <p class="pricing-note">
+                        小規模開催から一緒に育ててくださる方向けのプランです。
+                    </p>
+                </div>
+
+                <div class="pricing-card reveal hover-target" style="background:#FCE4EC; transition-delay:0.05s;">
+                    <div class="pricing-badge" style="background:var(--pink);">LAB</div>
+                    <h4 class="pricing-title">Lab Sponsor</h4>
+                    <p class="pricing-price">¥300,000〜</p>
+                    <ul class="pricing-list">
+                        <li>年数回の開催に対する継続協賛</li>
+                        <li>「〇〇社presents」などタイトルへの社名掲載</li>
+                        <li>レポート記事・動画の共同制作</li>
+                    </ul>
+                    <p class="pricing-note">
+                        社外・社内向けにCSRストーリーを打ち出したい企業さま向け。
+                    </p>
+                </div>
+
+                <div class="pricing-card reveal hover-target" style="background:#E3F2FD; transition-delay:0.1s;">
+                    <div class="pricing-badge" style="background:var(--cyan);">GALAXY</div>
+                    <h4 class="pricing-title">Galaxy Sponsor</h4>
+                    <p class="pricing-price">ご相談</p>
+                    <ul class="pricing-list">
+                        <li>オリジナルプログラムの共同開発</li>
+                        <li>全国複数拠点での開催展開</li>
+                        <li>採用や教育事業との連動企画</li>
+                    </ul>
+                    <p class="pricing-note">
+                        中長期でのパートナーシップを前提とした、完全カスタムプランです。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- セクション：FAQ -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">FAQ</div>
+            <h2 class="section-title">よくあるご質問</h2>
+        </div>
+
+        <ul class="faq-list">
+            <li class="faq-item">
+                <div class="faq-q">Q. まだ小さい子どもでも参加できますか？</div>
+                <div class="faq-a">
+                    A. 目安としては小学校1年生以上を対象としていますが、保護者の方がしっかりサポートしていただける場合は、
+                    年長さんの参加もご相談可能です。安全面を最優先しつつ、ご相談のうえ決定させていただきます。
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q">Q. 科学が苦手な親でも大丈夫でしょうか？</div>
+                <div class="faq-a">
+                    A. 全く問題ありません。「難しい専門用語を覚える場」ではなく、
+                    「一緒に驚いて、一緒に考えてみる場」であることを重視しています。
+                    ファシリテーターがやさしくナビゲートしますのでご安心ください。
+                </div>
+            </li>
+            <li class="faq-item">
+                <div class="faq-q">Q. スポンサーとしての参画に興味があります。まず何をしたらいいですか？</div>
+                <div class="faq-a">
+                    A. まずは実現したいことや、想定している対象エリア・ご予算感などをヒアリングさせてください。
+                    そのうえで、開催規模や回数に応じたプランをご提案いたします。
+                    オンラインでの打ち合わせも可能です。
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- CTA / お問い合わせ導線 -->
+    <section id="contact" class="cta-section">
+        <div class="cta-inner reveal">
+            <h2 class="cta-title">未来の「わくわくする教室」を、一緒につくりませんか？</h2>
+            <p class="cta-text">
+                「自社のCSRとして、子どもたちの学びを応援したい」<br>
+                「社員やその家族向けのイベントとして開催したい」<br>
+                「地域とつながるきっかけがほしい」<br><br>
+                そんな企業・団体のみなさまと一緒に、Future Science Lab を育てていければ嬉しいです。<br>
+                まずはお気軽にお問い合わせください。
+            </p>
+            <a href="mailto:info@ink-production.jp?subject=Future%20Science%20Lab%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%81%AE%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B" class="btn hover-target">
+                メールで問い合わせる
+            </a>
+        </div>
+
+        <div class="csr-mini">
+            <div class="csr-mini-inner">
+                <div class="csr-mini-text">
+                    Future Science Lab は、まだ小さなプロジェクトです。<br>
+                    だからこそ、関わってくださるパートナーのみなさまと一緒に、かたちを変えながら育っていきたいと考えています。
+                    <br><br>
+                    「一度話を聞いてみたい」「まずは見学したい」といった段階でも、ぜひお気軽にご連絡ください。
+                </div>
+                <div class="csr-mini-emoji">🧪✨</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer>
+        <p style="font-size:0.9rem; margin-bottom:8px;">
+            <a href="index.html" style="color:#fff; text-decoration:underline; margin-right:10px;">TOP</a>
+            /
+            <a href="service-web.html" style="color:#fff; text-decoration:underline; margin:0 10px;">WEB</a>
+            /
+            <a href="service-solution.html" style="color:#fff; text-decoration:underline; margin:0 10px;">SOLUTION</a>
+            /
+            <a href="service-video.html" style="color:#fff; text-decoration:underline; margin:0 10px;">VIDEO</a>
+            /
+            <a href="service-sns.html" style="color:#fff; text-decoration:underline; margin:0 10px;">SNS</a>
+            /
+            <a href="science-lab.html" style="color:#fff; text-decoration:underline; margin-left:10px;">SCIENCE LAB</a>
+        </p>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">LET'S MAKE MAGIC & SCIENCE.</h2>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <!-- スクリプト -->
+    <script>
+        // ローディングアニメーション
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // カスタムカーソル
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        // スクロール時のふわっと表示
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

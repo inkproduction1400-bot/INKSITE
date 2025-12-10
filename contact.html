@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iNK PRODUCTION | Contact</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #F0F0F0;
+      --black: #0f0f0f;
+      --white: #ffffff;
+      --yellow: #FFE800;
+      --pink: #FF4D8C;
+      --cyan: #00F0FF;
+      --lime: #CCFF00;
+      --purple: #9D4EDD;
+      --border: 3px solid var(--black);
+      --shadow: 6px 6px 0px var(--black);
+      --shadow-hover: 10px 10px 0px var(--black);
+    }
+
+    * {
+      box-sizing: border-box;
+      cursor: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(var(--black) 1px, transparent 1px);
+      background-size: 30px 30px;
+      color: var(--black);
+      font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Archivo Black', sans-serif;
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    /* カスタムカーソル */
+    .cursor {
+      width: 20px;
+      height: 20px;
+      background: var(--black);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor.active {
+      width: 80px;
+      height: 80px;
+      background: var(--white);
+      mix-blend-mode: difference;
+    }
+
+    /* ローディング */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: var(--purple);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+    }
+    .loader.hidden {
+      transform: translateY(-100%);
+    }
+    .loader-text {
+      font-family: 'Archivo Black';
+      font-size: 5vw;
+      animation: pulse 0.5s infinite alternate;
+      text-transform: none;
+      color: var(--white);
+    }
+
+    @keyframes pulse {
+      to { opacity: 0.5; }
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      padding: 15px 40px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      font-size: 1.1rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.1s;
+      text-align: center;
+    }
+    .btn:hover {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    header {
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      background: var(--white);
+      border: var(--border);
+      padding: 5px 20px;
+      box-shadow: var(--shadow);
+      text-transform: none;
+    }
+    nav {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .nav-link {
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--black);
+      padding: 8px 14px;
+      background: var(--white);
+      border: 2px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      font-size: 0.9rem;
+      transform: rotate(-2deg);
+    }
+    .nav-link.active {
+      background: var(--yellow);
+    }
+
+    .contact-wrapper {
+      padding: 40px 20px 80px;
+    }
+
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto 10px auto;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .breadcrumb span {
+      background: var(--white);
+      border: 2px solid var(--black);
+      padding: 4px 10px;
+      box-shadow: 3px 3px 0 var(--black);
+    }
+
+    .contact-panel {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 30px 50px;
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 40px;
+    }
+    .contact-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.02) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      pointer-events: none;
+    }
+    .contact-panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      display: inline-block;
+      background: var(--pink);
+      color: var(--white);
+      border: 2px solid var(--black);
+      padding: 4px 12px;
+      font-weight: 700;
+      transform: rotate(-3deg);
+      box-shadow: 3px 3px 0 var(--black);
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+
+    .contact-title {
+      font-size: 2.4rem;
+      margin-bottom: 14px;
+    }
+
+    .contact-lead {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .info-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.96rem;
+      line-height: 1.9;
+    }
+    .info-list li {
+      margin-bottom: 8px;
+    }
+    .info-label {
+      display: inline-block;
+      min-width: 5em;
+      font-weight: 700;
+    }
+
+    .info-note {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f5f5f5;
+      border: 2px dashed var(--black);
+    }
+
+    .contact-form-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+    .contact-form-title {
+      font-size: 1.2rem;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    label {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 2px solid var(--black);
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+      outline: none;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      box-shadow: 0 0 0 3px var(--yellow);
+    }
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-help {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .submit-row {
+      margin-top: 8px;
+    }
+
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    footer h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .contact-panel {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      nav {
+        flex-wrap: wrap;
+      }
+      .contact-panel {
+        padding: 28px 20px 36px;
+      }
+      .contact-title {
+        font-size: 2rem;
+      }
+      .cursor { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+
+  <!-- Loader -->
+  <div class="loader">
+    <div class="loader-text">iNK PRODUCTION</div>
+    <div style="margin-top:20px; font-weight:bold;">LOADING CONTACT...</div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo hover-target">iNK PRODUCTION</div>
+    <nav>
+      <a href="index.html" class="nav-link hover-target">TOP</a>
+      <a href="service-web.html" class="nav-link hover-target">WEB DESIGN</a>
+      <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+      <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+      <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+      <a href="science-lab.html" class="nav-link hover-target">SCIENCE LAB</a>
+    </nav>
+    <!-- CONTACT はこのページなので active -->
+    <a href="contact.html" class="btn hover-target">CONTACT</a>
+  </header>
+
+  <main class="contact-wrapper">
+    <div class="breadcrumb">
+      <span>HOME &gt; CONTACT</span>
+    </div>
+
+    <section class="contact-panel">
+      <!-- 左：会社情報 -->
+      <div class="contact-panel-inner">
+        <div class="section-label">CONTACT / COMPANY INFO</div>
+        <h1 class="contact-title">お問い合わせ</h1>
+        <p class="contact-lead">
+          制作のご相談・お見積り・パートナー連携のご相談など、<br>
+          下記フォームまたは記載のメールアドレスよりお気軽にご連絡ください。
+        </p>
+
+        <ul class="info-list">
+          <li><span class="info-label">Mail：</span>e.nagai@ink-production.info</li>
+          <li><span class="info-label">TEL：</span>080-5261-9583</li>
+          <li><span class="info-label">所在地：</span>福岡県糸島市美咲が丘3-7-1(102)</li>
+          <li><span class="info-label">代表者：</span>永井悦信</li>
+          <li>
+            <span class="info-label">事業内容：</span>
+            インターネット等の通信ネットワーク及び情報技術を利用した各種情報提供サービス。<br>
+            &emsp;&emsp;&nbsp;マルチメディアコンテンツの企画、制作、配信。WEBマーケティング事業。
+          </li>
+        </ul>
+
+        <div class="info-note">
+          ※お電話に出られない場合は、折り返しご連絡いたします。<br>
+          ※フォーム送信後にお手元のメールソフトが立ち上がる仕様です。
+        </div>
+      </div>
+
+      <!-- 右：メールフォーム -->
+      <div class="contact-form-wrapper">
+        <h2 class="contact-form-title">メールフォーム</h2>
+        <!-- mailto でメールクライアントを起動 -->
+        <form
+          action="mailto:e.nagai@ink-production.info"
+          method="post"
+          enctype="text/plain"
+        >
+          <div class="form-row">
+            <label for="name">お名前 / ご担当者名</label>
+            <input type="text" id="name" name="お名前" required>
+          </div>
+
+          <div class="form-row">
+            <label for="company">会社名 / 団体名（任意）</label>
+            <input type="text" id="company" name="会社名">
+          </div>
+
+          <div class="form-row">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="メールアドレス" required>
+          </div>
+
+          <div class="form-row">
+            <label for="tel">お電話番号（任意）</label>
+            <input type="text" id="tel" name="電話番号">
+          </div>
+
+          <div class="form-row">
+            <label for="subject">ご用件</label>
+            <input type="text" id="subject" name="件名" placeholder="例：Webサイト制作の相談" required>
+          </div>
+
+          <div class="form-row">
+            <label for="message">お問い合わせ内容</label>
+            <textarea id="message" name="お問い合わせ内容" required></textarea>
+            <div class="form-help">
+              希望される内容・スケジュール感・ご予算イメージなどがあれば、可能な範囲でご記入ください。
+            </div>
+          </div>
+
+          <!-- メールの件名を固定で付けたい場合 -->
+          <input type="hidden" name="メールタイトル" value="iNK PRODUCTION サイトからのお問い合わせ">
+
+          <div class="submit-row">
+            <button type="submit" class="btn hover-target" style="width:100%;">
+              メールソフトを開いて送信する
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <h2>LET'S MAKE IT MOVE.</h2>
+    <p>© 2024 iNK PRODUCTION Inc.</p>
+  </footer>
+
+  <script>
+    // Loader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.loader').classList.add('hidden');
+      }, 1200);
+    });
+
+    // カーソル
+    const cursor = document.querySelector('.cursor');
+    const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    hoverTargets.forEach(target => {
+      target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+      target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+    });
+  </script>
+</body>
+</html>

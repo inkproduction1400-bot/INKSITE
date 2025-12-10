@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | Playful Creative Agency</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           ROOT VARIABLES & RESET
+           ========================================= */
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none; /* デフォルトカーソルを消す */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px; /* ドットパターン背景 */
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* =========================================
+           CUSTOM CURSOR
+           ========================================= */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        /* =========================================
+           LOADING SCREEN
+           ========================================= */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--yellow);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            /* iNKの表記を活かすためuppercaseを解除 */
+            text-transform: none; 
+        }
+
+        /* =========================================
+           COMPONENTS
+           ========================================= */
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--cyan);
+            border: 2px solid var(--black);
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 var(--black);
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* =========================================
+           HEADER & NAV
+           ========================================= */
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            gap: 24px;
+        }
+
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none; 
+        }
+
+        .logo a {
+            color: inherit;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        /* =========================================
+           HERO
+           ========================================= */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 8vw;
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+            text-shadow: 
+                4px 4px 0 var(--black),
+                -1px -1px 0 var(--black),  
+                1px -1px 0 var(--black),
+                -1px 1px 0 var(--black),
+                1px 1px 0 var(--black);
+        }
+
+        .hero h1 span {
+            display: inline-block;
+            color: var(--yellow);
+            transform: rotate(-5deg);
+        }
+
+        /* Floating Shapes */
+        .shape {
+            position: absolute;
+            z-index: 1;
+            border: var(--border);
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape-1 { top: 10%; left: 5%; width: 100px; height: 100px; background: var(--pink); border-radius: 50%; }
+        .shape-2 { bottom: 20%; right: 10%; width: 120px; height: 120px; background: var(--cyan); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation-delay: 1s; }
+        .shape-3 { top: 20%; right: 15%; width: 80px; height: 80px; background: var(--lime); transform: rotate(45deg); animation-delay: 2s; }
+
+        /* =========================================
+           MARQUEE (Infinite Scroll)
+           ========================================= */
+        .marquee-container {
+            background: var(--black);
+            color: var(--white);
+            padding: 20px 0;
+            border-top: var(--border);
+            border-bottom: var(--border);
+            overflow: hidden;
+            white-space: nowrap;
+            transform: rotate(-2deg) scale(1.05);
+            margin: 50px 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+            font-family: 'Archivo Black';
+            font-size: 3rem;
+        }
+
+        /* =========================================
+           SERVICES (Cards)
+           ========================================= */
+        .section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 10px 30px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(2deg);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0; /* スクロールアニメ用 */
+            transform: translateY(50px);
+        }
+
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* ホバー時に背景にパターンが出る */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.4s;
+        }
+
+        /* 画像アイコンを絵文字と同じサイズ感にする */
+        .card-icon img {
+            width: 4rem;
+            height: 4rem;
+            display: block;
+            object-fit: contain;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .card .btn {
+            margin-top: 20px;
+        }
+
+        /* =========================================
+           CSR / SCIENCE SECTION
+           ========================================= */
+        .csr-wrapper {
+            background: var(--lime);
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+            padding: 100px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .csr-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Bubbles Animation Background */
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--black);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+            z-index: 1;
+        }
+
+        .science-box {
+            background: var(--white);
+            border: var(--border);
+            padding: 50px;
+            box-shadow: 15px 15px 0 rgba(0,0,0,0.8);
+            flex: 1;
+        }
+
+        .science-visual {
+            flex: 1;
+            text-align: center;
+        }
+
+        .science-emoji {
+            font-size: 10rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            animation: wobble 3s infinite ease-in-out;
+        }
+
+        /* 画像を絵文字と同じスケールで見せる */
+        .science-emoji img {
+            width: 1em;
+            height: 1em;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* =========================================
+           ANIMATIONS & UTILS
+           ========================================= */
+        @keyframes pulse { to { opacity: 0.5; } }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+        @keyframes wobble { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
+        /* スクロールアニメーション用クラス */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1024px) {
+            header {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; }
+            .csr-container { flex-direction: column-reverse; }
+            .marquee-container { transform: none; }
+            .cursor { display: none; } /* スマホではカーソル非表示 */
+            nav {
+                justify-content: flex-start;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- カスタムカーソル -->
+    <div class="cursor"></div>
+
+    <!-- ローディング画面 -->
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">INITIALIZING EXPERIMENT...</div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header>
+        <div class="logo hover-target">
+            <a href="index.html">iNK PRODUCTION</a>
+        </div>
+
+        <nav>
+            <a href="index.html" class="nav-link hover-target active">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target">WEB</a>
+            <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+            <a href="science-lab.html" class="nav-link hover-target">SCIENCE LAB</a>
+        </nav>
+
+        <a href="contact.html" class="btn hover-target">CONTACT</a>
+    </header>
+
+    <!-- ヒーローエリア -->
+    <section class="hero">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+
+        <div class="badge">EST. 2024</div>
+        <h1>
+            WE CREATE <br>
+            <span>FUN!</span> & DIGITAL.
+        </h1>
+        <p style="font-size: 1.2rem; margin-top: 20px; background: white; border: 2px solid black; padding: 10px;">
+            Web / Solution / Video / SNS
+        </p>
+    </section>
+
+    <!-- 無限スクロールバー -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            WEB DESIGN • SOLUTION DEV • VIDEO CREATOR • SNS MARKETING • FUTURE SCIENCE LAB • iNK PRODUCTION • 
+            WEB DESIGN • SOLUTION DEV • VIDEO CREATOR • SNS MARKETING • FUTURE SCIENCE LAB • iNK PRODUCTION • 
+        </div>
+    </div>
+
+    <!-- サービスセクション -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">OUR EXPERIMENTS</h2>
+        </div>
+        <div class="grid">
+            <!-- カード 1 -->
+            <div class="card reveal hover-target" style="background-color: #E0F7FA;">
+                <div class="card-icon">
+                    <img src="img/1.png" alt="Web Design">
+                </div>
+                <h3>Web Design</h3>
+                <p>誰もが振り返る、脳裏に焼き付くWebサイト制作。UI/UXの常識を少しだけ壊します。</p>
+                <a href="service-web.html" class="btn hover-target">VIEW DETAIL</a>
+            </div>
+            <!-- カード 2 -->
+            <div class="card reveal hover-target" style="transition-delay: 0.1s; background-color: #F3E5F5;">
+                <div class="card-icon">
+                    <img src="img/2.png" alt="Solution Dev">
+                </div>
+                <h3>Solution Dev</h3>
+                <p>複雑な課題を、シンプルなコードと遊び心で解決。システム開発にユーモアを。</p>
+                <a href="service-solution.html" class="btn hover-target">VIEW DETAIL</a>
+            </div>
+            <!-- カード 3 -->
+            <div class="card reveal hover-target" style="transition-delay: 0.2s; background-color: #FFF3E0;">
+                <div class="card-icon">
+                    <img src="img/3.png" alt="Video Creative">
+                </div>
+                <h3>Video Creative</h3>
+                <p>1秒で心を掴む映像制作。TikTokから企業VPまで、動きで魅了します。</p>
+                <a href="service-video.html" class="btn hover-target">VIEW DETAIL</a>
+            </div>
+            <!-- カード 4 -->
+            <div class="card reveal hover-target" style="transition-delay: 0.3s; background-color: #F1F8E9;">
+                <div class="card-icon">
+                    <img src="img/4.png" alt="SNS Marketing">
+                </div>
+                <h3>SNS Marketing</h3>
+                <p>バズるだけじゃない。ファンという「共犯者」を作るSNS運用。</p>
+                <a href="service-sns.html" class="btn hover-target">VIEW DETAIL</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CSR / 科学教室セクション -->
+    <div class="csr-wrapper">
+        <!-- 泡のアニメーション -->
+        <div class="bubble" style="left: 10%; width: 20px; height: 20px; animation-duration: 4s;"></div>
+        <div class="bubble" style="left: 30%; width: 40px; height: 40px; animation-duration: 7s;"></div>
+        <div class="bubble" style="left: 70%; width: 15px; height: 15px; animation-duration: 5s;"></div>
+        <div class="bubble" style="left: 85%; width: 30px; height: 30px; animation-duration: 6s;"></div>
+
+        <div class="csr-container">
+            <div class="science-box reveal hover-target">
+                <div class="badge" style="background:var(--yellow);">CSR ACTIVITY</div>
+                <h2 style="font-size: 3rem; margin: 20px 0;">親子で学べる科学教室</h2>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    <strong>「未来をつくる実験、はじめよう。」</strong><br>
+                    子供たちの探究心は、最高のクリエイティブ・ソース。
+                    私たちは小学生を対象とした「科学実験教室」を通じて、
+                    失敗を恐れず挑戦する探究心を育んでいます。
+                </p>
+                <a href="science-lab.html" class="btn hover-target" style="margin-top: 30px; background:var(--pink);">SCIENCE LAB 詳細を見る →</a>
+            </div>
+            <div class="science-visual reveal">
+                <div class="science-emoji">
+                    <img src="img/science/6.png" alt="Science Lab">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- フッター -->
+    <footer style="background: var(--black); color: var(--white); padding: 50px; text-align: center;">
+        <h2 style="font-size: 3rem; margin-bottom: 20px;">LET'S MAKE MAGIC.</h2>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <!-- スクリプト -->
+    <script>
+        // ローディングアニメーション
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500); // 1.5秒後に消える
+        });
+
+        // カスタムカーソル
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        // スクロール時のふわっと表示 (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | Solution Development</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           ROOT VARIABLES & RESET
+           ========================================= */
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* =========================================
+           CUSTOM CURSOR
+           ========================================= */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        /* =========================================
+           LOADING SCREEN
+           ========================================= */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--yellow);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            text-transform: none;
+        }
+
+        /* =========================================
+           COMPONENTS
+           ========================================= */
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--cyan);
+            border: 2px solid var(--black);
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 var(--black);
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           HEADER
+           ========================================= */
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none;
+        }
+
+        .logo a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        /* =========================================
+           SUB HERO
+           ========================================= */
+        .sub-hero-wrapper {
+            padding: 40px 20px 20px;
+        }
+
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto 10px auto;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .breadcrumb span {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 10px;
+            box-shadow: 3px 3px 0 var(--black);
+        }
+
+        .sub-hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sub-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.02),
+                rgba(0, 0, 0, 0.02) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            pointer-events: none;
+        }
+
+        .sub-hero-main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .sub-hero-kicker {
+            display: inline-block;
+            background: var(--pink);
+            color: var(--black);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 16px;
+        }
+
+        .sub-hero-title {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .sub-hero-title span {
+            display: inline-block;
+            background: var(--yellow);
+            padding: 4px 8px;
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 var(--black);
+        }
+
+        .sub-hero-lead {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .sub-hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .sub-hero-side {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .sub-hero-badge {
+            background: var(--cyan);
+            border: var(--border);
+            padding: 6px 14px;
+            font-weight: 700;
+            transform: rotate(4deg);
+            box-shadow: var(--shadow);
+        }
+
+        .sub-hero-note {
+            font-size: 0.9rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 260px;
+        }
+
+        .sub-hero-emoji {
+            font-size: 4rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            transform: rotate(-8deg);
+        }
+        .sub-hero-title span.solution-hero-sub {
+             display: inline-block;   /* もしくは block */
+             margin-top: 10px;        /* 行間として空けたい分だけ調整 */
+             background: transparent; /* 黄色背景を消す */
+             box-shadow: none;        /* 影も消す */
+             transform: none;         /* 回転もリセット */
+             padding: 0;              /* 余白もリセット */
+        }
+
+        /* =========================================
+           BASE SECTION
+           ========================================= */
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--lime);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 2.4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 8px 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(1deg);
+        }
+
+        .section-lead {
+            margin-top: 16px;
+            font-size: 1rem;
+            max-width: 640px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           GRID / CARDS
+           ========================================= */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0; /* スクロールアニメ用 */
+            transform: translateY(50px);
+        }
+
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.05) 10px,
+                rgba(0,0,0,0.05) 20px
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .card-list {
+            margin: 12px 0 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        /* =========================================
+           PROCESS (TIMELINE)
+           ========================================= */
+        .process-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .process-note {
+            background: var(--white);
+            border: var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .process-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-left: 3px dashed var(--black);
+        }
+
+        .process-item {
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+
+        .process-dot {
+            position: absolute;
+            left: -9px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--yellow);
+            border: 3px solid var(--black);
+        }
+
+        .process-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .process-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* =========================================
+           PRICING
+           ========================================= */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            right: 16px;
+            background: var(--pink);
+            border: 2px solid var(--black);
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(5deg);
+        }
+
+        .pricing-title {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .pricing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+
+        .pricing-note {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .pricing-list {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           CTA
+           ========================================= */
+        .cta-section {
+            padding: 80px 20px 100px;
+        }
+
+        .cta-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black);
+            color: var(--white);
+            border: 3px solid var(--white);
+            box-shadow: 10px 10px 0 var(--black);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-inner::after {
+            content: "LET'S AUTOMATE";
+            position: absolute;
+            top: -18px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--black);
+        }
+
+        .cta-title {
+            font-size: 2.3rem;
+            margin-bottom: 12px;
+        }
+
+        .cta-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        /* =========================================
+           CSR MINI + FOOTER
+           ========================================= */
+        .csr-mini {
+            background: var(--lime);
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+
+        .csr-mini-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .csr-mini-text {
+            max-width: 640px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .csr-mini-emoji {
+            font-size: 3rem;
+            filter: drop-shadow(3px 3px 0 var(--black));
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* =========================================
+           ANIMATIONS & UTILS
+           ========================================= */
+        @keyframes pulse { to { opacity: 0.5; } }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .sub-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sub-hero-side {
+                align-items: flex-start;
+            }
+            .process-wrapper {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .sub-hero-title {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 60px 16px;
+            }
+            .cta-inner {
+                padding: 32px 20px;
+            }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- カスタムカーソル -->
+    <div class="cursor"></div>
+
+    <!-- ローディング画面 -->
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">BOOTING SOLUTION ENGINE...</div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header>
+        <div class="logo hover-target">
+            <a href="index.html">iNK PRODUCTION</a>
+        </div>
+        <nav>
+            <a href="index.html" class="nav-link hover-target">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target">WEB</a>
+            <a href="service-solution.html" class="nav-link hover-target active">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+            <a href="science-lab.html" class="nav-link hover-target">SCIENCE LAB</a>
+            <a href="mailto:info@example.com" class="btn hover-target">CONTACT</a>
+        </nav>
+    </header>
+
+    <!-- SUB HERO -->
+    <div class="sub-hero-wrapper">
+        <div class="breadcrumb">
+            <span>HOME &gt; SOLUTION DEVELOPMENT</span>
+        </div>
+
+        <section class="sub-hero reveal">
+            <div class="sub-hero-main">
+                <div class="sub-hero-kicker">SOLUTION DEV / SYSTEM &amp; AUTOMATION</div>
+                <h1 class="sub-hero-title">
+                    業務を<span>AUTO &amp; FUN</span>にする<br>
+                    <span class="solution-hero-sub">ソリューション開発。</span>
+                  </h1>
+                <p class="sub-hero-lead">
+                    「とりあえず人力で回している」「属人化していて怖い」——  
+                    そんなバックヤードのモヤモヤを、仕組みとデザインでまるっと改善します。  
+                    小さな自動化から、フルスクラッチの業務システムまで対応可能です。
+                </p>
+                <div class="sub-hero-tags">
+                    <span class="pill">✅ Webアプリ / 管理画面</span>
+                    <span class="pill">✅ API連携 / 自動化フロー</span>
+                    <span class="pill">✅ ノーコード / ローコード活用</span>
+                    <span class="pill">✅ PoC / MVP開発</span>
+                </div>
+            </div>
+            <div class="sub-hero-side">
+                <div class="sub-hero-badge">「めんどくさい」をコードで消す</div>
+                <div class="sub-hero-note">
+                    現場のSlack・Excel・LINE運用を  
+                    そのままシステムに落とし込むのが得意です。  
+                    仕様書がなくても、ヒアリングから一緒につくります。
+                </div>
+                <div class="sub-hero-emoji">🚀</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SECTION: どんなソリューションを作る？ -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">WHAT WE BUILD</div>
+            <h2 class="section-title">iNKのソリューション領域</h2>
+            <p class="section-lead">
+                「プロジェクトの現場を知っている制作者」として、  
+                フロントエンドからバックエンド、ノーコードを組み合わせたハイブリッド開発まで柔軟に対応します。
+            </p>
+        </div>
+
+        <div class="grid">
+            <article class="card reveal">
+                <div class="card-tag">Webアプリ / 管理画面</div>
+                <h3 class="card-title">オペレーションを支える専用ツール開発</h3>
+                <p class="card-body">
+                    予約管理・マッチング・進行管理など、既存のSaaSではフィットしない業務を  
+                    自社専用のWebアプリとして設計・開発します。UI/UXデザインから一貫対応。
+                </p>
+                <ul class="card-list">
+                    <li>管理画面UI / ダッシュボード設計</li>
+                    <li>顧客・案件・在庫管理システム</li>
+                    <li>スタッフ/キャスト管理・シフト管理</li>
+                </ul>
+            </article>
+
+            <article class="card reveal" style="transition-delay:0.08s;">
+                <div class="card-tag">API連携 / 自動化</div>
+                <h3 class="card-title">「人がやっているルーティン」をフロー化</h3>
+                <p class="card-body">
+                    ChatGPT / 各種SaaS / スプレッドシートなどをAPIでつなぎ、  
+                    これまで人が対応していた部分を自動処理へ置き換えます。
+                </p>
+                <ul class="card-list">
+                    <li>問い合わせ対応フローの自動化</li>
+                    <li>予約・決済・通知の一括連携</li>
+                    <li>LINE・メールとの連動ワークフロー</li>
+                </ul>
+            </article>
+
+            <article class="card reveal" style="transition-delay:0.16s;">
+                <div class="card-tag">ノーコード / ローコード</div>
+                <h3 class="card-title">「まず試す」ためのMVP構築</h3>
+                <p class="card-body">
+                    n8n / Make / Airtable / Notion などを活用し、  
+                    フルスクラッチの前に「まず動くもの」を短期間で立ち上げます。
+                </p>
+                <ul class="card-list">
+                    <li>MVP / プロトタイプ開発</li>
+                    <li>既存フローのノーコード置き換え</li>
+                    <li>将来のフル開発を見据えた設計</li>
+                </ul>
+            </article>
+
+            <article class="card reveal" style="transition-delay:0.24s;">
+                <div class="card-tag">AI活用</div>
+                <h3 class="card-title">現場にフィットするAIエージェント</h3>
+                <p class="card-body">
+                    現場のナレッジやFAQをベースに、  
+                    「ちゃんと役に立つ」AIチャットボットや支援ツールを構築します。
+                </p>
+                <ul class="card-list">
+                    <li>問い合わせ / サポート用チャットエージェント</li>
+                    <li>社内ドキュメント検索アシスタント</li>
+                    <li>レポート / 集計の自動生成</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECTION: PROCESS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">PROCESS</div>
+            <h2 class="section-title">開発の進め方</h2>
+            <p class="section-lead">
+                「要件定義の前に、まず現場の話を聞く」ことからスタート。  
+                長く使える仕組みになるよう、段階を踏みながら一緒につくっていきます。
+            </p>
+        </div>
+
+        <div class="process-wrapper">
+            <div class="process-note">
+                <strong>いきなり大規模開発にはしません。</strong><br><br>
+                まずは「1つのチーム / 1店舗 / 1プロセス」など、小さな単位での運用からスタート。  
+                実際に現場で使ってもらいながら、改善と拡張を繰り返していきます。
+                <br><br>
+                仕様書づくりがゴールではなく、  
+                <span style="background:var(--yellow);padding:2px 4px;">実際に回る仕組みを一緒に作る</span>ことを大切にしています。
+            </div>
+
+            <ol class="process-list">
+                <li class="process-item">
+                    <div class="process-dot"></div>
+                    <div class="process-title">1. ヒアリング &amp; 現状整理</div>
+                    <p class="process-desc">
+                        まずはチャット・オンラインMTGで、現在の運用や課題をざっくり共有いただきます。  
+                        スプレッドシートや手書きメモの写真など、そのままいただいてOKです。
+                    </p>
+                </li>
+                <li class="process-item">
+                    <div class="process-dot"></div>
+                    <div class="process-title">2. ラフ設計 &amp; 画面イメージ</div>
+                    <p class="process-desc">
+                        画面構成やデータの持ち方をラフスケッチで共有。  
+                        早い段階で「どんな画面になるか」をすり合わせてから実装に入ります。
+                    </p>
+                </li>
+                <li class="process-item">
+                    <div class="process-dot"></div>
+                    <div class="process-title">3. MVP / 試験運用スタート</div>
+                    <p class="process-desc">
+                        まずは最小機能でリリースし、一部メンバーのみで試験運用。  
+                        実際のオペレーション上の詰まりやすい箇所を洗い出します。
+                    </p>
+                </li>
+                <li class="process-item">
+                    <div class="process-dot"></div>
+                    <div class="process-title">4. 改善・拡張・本番運用へ</div>
+                    <p class="process-desc">
+                        運用上のフィードバックをもとに改善しながら、対象範囲を拡大。  
+                        運用マニュアル・トレーニングもセットでサポートします。
+                    </p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- SECTION: PRICING -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">PRICE IMAGE</div>
+            <h2 class="section-title">ご料金の目安</h2>
+            <p class="section-lead">
+                要件や連携サービスの数によって大きく変動しますが、  
+                初期相談・概算見積もりまでは無料で対応しています。
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card reveal">
+                <div class="pricing-badge">まず試したい方向け</div>
+                <h3 class="pricing-title">ミニ自動化プラン</h3>
+                <p class="pricing-price">20〜40万円</p>
+                <ul class="pricing-list">
+                    <li>ノーコード / ローコード中心のフロー構築</li>
+                    <li>1〜2サービスとのAPI連携</li>
+                    <li>簡易マニュアル共有</li>
+                </ul>
+                <p class="pricing-note">
+                    例）問い合わせ自動振り分け、日次レポート自動生成 など
+                </p>
+            </div>
+
+            <div class="pricing-card reveal" style="transition-delay:0.08s;">
+                <div class="pricing-badge">しっかり業務システム</div>
+                <h3 class="pricing-title">業務アプリ開発プラン</h3>
+                <p class="pricing-price">80〜200万円</p>
+                <ul class="pricing-list">
+                    <li>専用Webアプリ / 管理画面の設計・実装</li>
+                    <li>ログイン・権限管理・基本的なログ取得</li>
+                    <li>1〜3ヶ月程度の開発期間目安</li>
+                </ul>
+                <p class="pricing-note">
+                    例）予約・案件管理システム、マッチング管理ツール など
+                </p>
+            </div>
+
+            <div class="pricing-card reveal" style="transition-delay:0.16s;">
+                <div class="pricing-badge">長期伴走</div>
+                <h3 class="pricing-title">継続改善プラン</h3>
+                <p class="pricing-price">月額 10〜30万円</p>
+                <ul class="pricing-list">
+                    <li>月次での機能追加・改善対応</li>
+                    <li>運用相談・仕様検討の壁打ち</li>
+                    <li>軽微な改善はスポットで即時反映</li>
+                </ul>
+                <p class="pricing-note">
+                    既存システムの継続改善や、新規事業の伴走に。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-inner reveal">
+            <h2 class="cta-title">「こんなことできる？」から、お気軽に。</h2>
+            <p class="cta-text">
+                まだ要件が固まっていなくても大丈夫です。<br>
+                現在の運用や、理想のゴールをざっくり共有いただければ、  
+                「まずどこから手をつけるか」から一緒に整理します。
+            </p>
+            <a href="mailto:info@example.com" class="btn hover-target">プロジェクトの相談をする →</a>
+        </div>
+    </section>
+
+    <!-- CSR MINI -->
+    <section class="csr-mini">
+        <div class="csr-mini-inner">
+            <div class="csr-mini-text">
+                <span class="badge" style="background:var(--yellow);">CSR / SCIENCE LAB</span><br>
+                iNK PRODUCTIONでは、事業とは別軸で「親子で学べる科学教室」を運営しています。  
+                企業向けのスポンサー協賛やコラボレーションも受付中です。
+                <br><br>
+                <a href="science-lab.html" class="nav-link hover-target" style="transform:none; box-shadow:4px 4px 0 var(--black);">
+                    科学教室の概要・スポンサー募集ページへ →
+                </a>
+            </div>
+            <div class="csr-mini-emoji">🧪</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        // ローディングアニメーション
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.querySelector('.loader');
+                if (loader) loader.classList.add('hidden');
+            }, 1200);
+        });
+
+        // カスタムカーソル
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            if (!cursor) return;
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor && cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor && cursor.classList.remove('active'));
+        });
+
+        // スクロール時のふわっと表示
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

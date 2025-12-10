@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | Video Creative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* カスタムカーソル */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        /* ローディング */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--purple);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            text-transform: none;
+            color: var(--white);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--cyan);
+            border: 2px solid var(--black);
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 var(--black);
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none;
+        }
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        .sub-hero-wrapper {
+            padding: 40px 20px 20px;
+        }
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto 10px auto;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .breadcrumb span {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 10px;
+            box-shadow: 3px 3px 0 var(--black);
+        }
+
+        .sub-hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sub-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.02),
+                rgba(0, 0, 0, 0.02) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            pointer-events: none;
+        }
+        .sub-hero-main {
+            position: relative;
+            z-index: 1;
+        }
+        .sub-hero-kicker {
+            display: inline-block;
+            background: var(--purple);
+            color: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 16px;
+        }
+        .sub-hero-title {
+            font-size: 3rem;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .sub-hero-title span {
+            display: inline-block;
+            background: var(--yellow);
+            padding: 4px 8px;
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 var(--black);
+            margin-bottom: 0.3em;
+        }
+        .sub-hero-lead {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .sub-hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .sub-hero-side {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .sub-hero-badge {
+            background: var(--pink);
+            border: var(--border);
+            padding: 6px 14px;
+            font-weight: 700;
+            transform: rotate(4deg);
+            box-shadow: var(--shadow);
+        }
+        .sub-hero-note {
+            font-size: 0.9rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 260px;
+        }
+        .sub-hero-emoji {
+            font-size: 4rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            transform: rotate(-8deg);
+        }
+        .sub-hero-emoji img {
+            display: block;
+            width: 420px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-label {
+            display: inline-block;
+            background: var(--lime);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 8px 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(1deg);
+        }
+        .section-lead {
+            margin-top: 16px;
+            font-size: 1rem;
+            max-width: 640px;
+            line-height: 1.8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.05) 10px,
+                rgba(0,0,0,0.05) 20px
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .card-list {
+            margin: 12px 0 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        .layout-split {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .note-box {
+            background: var(--white);
+            border: var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .sample-item {
+            background: #000;
+            color: var(--white);
+            padding: 16px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sample-label {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 3px 8px;
+            background: var(--yellow);
+            color: var(--black);
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: 999px;
+        }
+        .sample-title {
+            font-weight: 700;
+            margin-top: 24px;
+            font-size: 0.95rem;
+        }
+        .sample-meta {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .process-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-left: 3px dashed var(--black);
+        }
+        .process-item {
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+        .process-dot {
+            position: absolute;
+            left: -9px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--pink);
+            border: 3px solid var(--black);
+        }
+        .process-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .process-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* エディター紹介 */
+        .editor-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 30px;
+            align-items: center;
+        }
+        .editor-photo {
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .editor-photo::after {
+            content: "EDITOR";
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            padding: 4px 10px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(-5deg);
+        }
+        .editor-photo-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(6px 6px 0 var(--black));
+        }
+        .editor-info {
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 24px 24px 28px;
+            position: relative;
+        }
+        .editor-name {
+            display: inline-block;
+            font-size: 1.6rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .editor-role {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 4px 10px;
+            background: var(--black);
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: 999px;
+        }
+        .editor-copy {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .pricing-card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            right: 16px;
+            background: var(--purple);
+            border: 2px solid var(--black);
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(5deg);
+            color: var(--white);
+        }
+        .pricing-title {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .pricing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .pricing-note {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        .pricing-list {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            padding: 80px 20px 100px;
+        }
+        .cta-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black);
+            color: var(--white);
+            border: 3px solid var(--white);
+            box-shadow: 10px 10px 0 var(--black);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .cta-inner::after {
+            content: "MAKE IT PLAYFUL";
+            position: absolute;
+            top: -18px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--black);
+        }
+        .cta-title {
+            font-size: 2.3rem;
+            margin-bottom: 12px;
+        }
+        .cta-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .csr-mini {
+            background: var(--lime);
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+        .csr-mini-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .csr-mini-text {
+            max-width: 640px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .csr-mini-emoji {
+            font-size: 3rem;
+            filter: drop-shadow(3px 3px 0 var(--black));
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        @keyframes pulse { to { opacity: 0.5; } }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .sub-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sub-hero-side {
+                align-items: flex-start;
+            }
+            .layout-split {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .editor-wrapper {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .sub-hero-title {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 60px 16px;
+            }
+            .cta-inner {
+                padding: 32px 20px;
+            }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">EXPORTING VIDEO MAGIC...</div>
+    </div>
+
+    <header>
+        <div class="logo hover-target">iNK PRODUCTION</div>
+        <nav>
+            <a href="index.html" class="nav-link hover-target">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target">WEB DESIGN</a>
+            <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target active">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+        </nav>
+        <a href="contact.html" class="btn hover-target">CONTACT</a>
+    </header>
+
+    <div class="sub-hero-wrapper">
+        <div class="breadcrumb">
+            <span>TOP &gt; SERVICES &gt; VIDEO</span>
+        </div>
+
+        <section class="sub-hero reveal">
+            <div class="sub-hero-main">
+                <div class="sub-hero-kicker">SERVICE DETAIL</div>
+                <h1 class="sub-hero-title">
+                    <span>VIDEO CREATIVE</span><br>
+                    THAT MOVES HEARTS IN 3 SECONDS.
+                </h1>
+                <p class="sub-hero-lead">
+                    スマホで流し見されるタイムラインのなかで、<br>
+                    「思わず指が止まる」数秒をつくる。<br>
+                    TikTok / Reels / ショート動画から、企業VPまで。<br>
+                    企画から編集、サムネイルまで一気通貫でサポートします。
+                </p>
+                <div class="sub-hero-tags">
+                    <div class="pill"><span>🎬</span> ショート動画制作</div>
+                    <div class="pill"><span>📱</span> 縦型動画</div>
+                    <div class="pill"><span>🧠</span> コンセプトメイク</div>
+                    <div class="pill"><span>✨</span> モーショングラフィックス</div>
+                </div>
+                <a href="#contact" class="btn hover-target">動画制作の相談をする</a>
+            </div>
+            <div class="sub-hero-side">
+                <div class="sub-hero-badge">
+                    STORY × RHYTHM × PLAYFUL
+                </div>
+                <div class="sub-hero-emoji">
+                    <img src="img/video/video.png" alt="Video Creative Illustration">
+                </div>
+                <div class="sub-hero-note">
+                    「かっこいい」だけで終わらない、<br>
+                    見た人が動きたくなる動画を一緒につくります。
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WHAT WE DO -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">WHAT WE DO</div>
+            <h2 class="section-title">このVIDEOでできること</h2>
+            <p class="section-lead">
+                TikTok / Reels のショート動画から、サービス紹介のアニメーション、<br>
+                会社紹介・採用動画まで。<br>
+                「尺」と「媒体」に合わせた構成・見せ方で、記憶に残る一瞬をデザインします。
+            </p>
+        </div>
+
+        <div class="grid">
+            <article class="card reveal hover-target" style="background-color:#E3F2FD;">
+                <div class="card-tag">01 SHORT FORM</div>
+                <h3 class="card-title">ショート動画（縦型 / 15〜60秒）</h3>
+                <div class="card-body">
+                    TikTok / Reels / YouTube Shorts など、<br>
+                    ファーストビュー命の世界で戦う動画を設計します。
+                    <ul class="card-list">
+                        <li>フックからオチまでの構成設計</li>
+                        <li>テロップ・アニメーション制作</li>
+                        <li>サムネイル・カバーデザイン</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#FFF3E0;">
+                <div class="card-tag">02 BRAND</div>
+                <h3 class="card-title">ブランド / サービス紹介動画</h3>
+                <div class="card-body">
+                    Webサイトや展示会、プレゼンなどで使える、<br>
+                    「これ見れば伝わる」紹介動画を企画・制作します。
+                    <ul class="card-list">
+                        <li>シナリオ・絵コンテの作成</li>
+                        <li>アニメーション・モーショングラフィックス</li>
+                        <li>BGM / SE の選定・簡易ナレーション</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#FCE4EC;">
+                <div class="card-tag">03 RECRUIT</div>
+                <h3 class="card-title">採用・カルチャームービー</h3>
+                <div class="card-body">
+                    「一緒に働きたい」と思ってもらうための、<br>
+                    空気感が伝わる採用動画をつくります。
+                    <ul class="card-list">
+                        <li>社員インタビュー・1日の流れ動画</li>
+                        <li>ミッション / ビジョンのビジュアル化</li>
+                        <li>SNS用のショートカット版も併せて制作可能</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#F1F8E9;">
+                <div class="card-tag">04 TEMPLATE</div>
+                <h3 class="card-title">内製化のためのテンプレ動画</h3>
+                <div class="card-body">
+                    「全部外注」ではなく、<br>
+                    社内で更新していけるようなテンプレ素材も提供します。
+                    <ul class="card-list">
+                        <li>再利用しやすい編集テンプレート</li>
+                        <li>テロップ・OP/ED の汎用パーツ</li>
+                        <li>「撮影のコツ」ミニマニュアル</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- STYLE & SAMPLE -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--purple); color:#fff;">STYLE & SAMPLE</div>
+            <h2 class="section-title">テイストとサンプルイメージ</h2>
+        </div>
+
+        <div class="layout-split">
+            <div class="note-box reveal">
+                <p>
+                    iNK PRODUCTION の動画は、<strong>「情報」だけでなく「温度感」も伝わること</strong>を大切にしています。<br><br>
+                    かっちりした企業紹介から、POPでフレンドリーなショート動画まで、<br>
+                    ブランドに合わせてテイストを調整しつつ、<br>
+                    どこかに「遊び心」と「リズム」を忍ばせます。
+                </p>
+                <p style="margin-top: 12px;">
+                    実際の案件では、参考にしたい動画や、既存のブランドデザインを共有いただき、<br>
+                    「これはやりたくない」「ここは攻めたい」といった温度感も一緒にすり合わせていきます。
+                </p>
+            </div>
+
+            <div class="sample-grid">
+                <div class="sample-item">
+                    <div class="sample-label">VERTICAL</div>
+                    <div class="sample-title">サービス紹介ショート（15秒）</div>
+                    <div class="sample-meta">
+                        最初の3秒で「悩み」を提示し、<br>
+                        残りで解決策＋サービス名をシンプルに。
+                    </div>
+                </div>
+                <div class="sample-item">
+                    <div class="sample-label" style="background:#FFCDD2;">BRAND</div>
+                    <div class="sample-title">ブランドムービー（60〜90秒）</div>
+                    <div class="sample-meta">
+                        代表メッセージ＋サービスの世界観を、<br>
+                        見終わったあとに余韻が残る構成で。
+                    </div>
+                </div>
+                <div class="sample-item">
+                    <div class="sample-label" style="background:#C8E6C9;">RECRUIT</div>
+                    <div class="sample-title">採用インタビュー（30〜60秒）</div>
+                    <div class="sample-meta">
+                        「なぜここで働くのか」のリアルな声を、<br>
+                        ストーリー仕立てで切り取ります。
+                    </div>
+                </div>
+                <div class="sample-item">
+                    <div class="sample-label" style="background:#BBDEFB;">MOTION</div>
+                    <div class="sample-title">UIアニメーション / プロダクト解説</div>
+                    <div class="sample-meta">
+                        Webやアプリの画面を、動きでわかりやすく。<br>
+                        チュートリアルやLP上の説明に。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--cyan);">PROCESS</div>
+            <h2 class="section-title">制作のながれ</h2>
+        </div>
+
+        <div class="layout-split">
+            <div>
+                <ol class="process-list">
+                    <li class="process-item reveal">
+                        <div class="process-dot"></div>
+                        <div class="process-title">01. ヒアリング / 参考共有</div>
+                        <p class="process-desc">
+                            目的・ターゲット・使うシーン・尺などをヒアリング。<br>
+                            参考にしたい動画があれば、URLを共有いただきます。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.05s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">02. 企画 / 構成案の作成</div>
+                        <p class="process-desc">
+                            ヒアリング内容をもとに、動画の構成案（ラフシナリオ）を作成。<br>
+                            ショート動画の場合は、1本あたりの構成パターンを複数検討します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.1s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">03. 絵コンテ / デザイン方向性の確認</div>
+                        <p class="process-desc">
+                            必要に応じて簡易絵コンテやキービジュアルを作成し、<br>
+                            テロップの雰囲気や色味、フォントなどをすり合わせます。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.15s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">04. 撮影 / 素材準備（必要な場合）</div>
+                        <p class="process-desc">
+                            スマホ・オンライン取材ベースの簡易撮影から、<br>
+                            クライアント様側で撮影いただいた素材をお預かりして編集する形まで柔軟に対応します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.2s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">05. 編集 / 初稿提出</div>
+                        <p class="process-desc">
+                            テロップ・アニメーション・BGMを入れた状態で初稿を提出。<br>
+                            修正希望をお伺いし、ブラッシュアップを行います。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.25s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">06. 納品 / 各SNS向けに書き出し</div>
+                        <p class="process-desc">
+                            縦型 / 横型 / 正方形など、使用予定の媒体に合わせて書き出し形式を調整。<br>
+                            サムネイル用の静止画も併せて納品します。
+                        </p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="note-box reveal">
+                <p>
+                    ショート動画の場合は、<strong>「まとめて複数本制作」</strong>することで、<br>
+                    企画・デザインの方向性を揃えつつ、1本あたりのコストを抑えることができます。
+                </p>
+                <p style="margin-top: 12px;">
+                    はじめて動画を作る場合でも、「何から決めればいいか」から一緒に整理しますので、<br>
+                    まずはラフなイメージだけでも構いません。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDITOR -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--pink);">EDITOR</div>
+            <h2 class="section-title">この動画を支えるエディター</h2>
+            <p class="section-lead">
+                一つひとつのカットにこだわり、<br>
+                「なんとなく」では終わらせない職人エディターが、画面のすみずみまで目を光らせています。
+            </p>
+        </div>
+
+        <div class="editor-wrapper">
+            <div class="editor-photo reveal hover-target">
+                <img src="img/video/video1.png" alt="Editor KENJI" class="editor-photo-img">
+            </div>
+            <div class="editor-info reveal">
+                <div>
+                    <span class="editor-name">KENJI</span>
+                    <span class="editor-role">VIDEO EDITOR</span>
+                </div>
+                <p class="editor-copy">
+                    見た目は大柄で強面ですが、温厚な性格で動画編集は細部まで手を抜かず一切の妥協をしない職人エディター。<br>
+                    カット割り・テロップ・効果音のひとつまで、見る人の感情が動くかどうかを基準に組み立てていきます。<br>
+                    趣味はプロレス。リングでの攻防のように、動画の「間」や「テンポ」にも徹底してこだわります。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--yellow);">PRICING</div>
+            <h2 class="section-title">料金の目安</h2>
+            <p class="section-lead">
+                動画の尺・本数・撮影の有無によって変動しますが、<br>
+                ご相談時にざっくりとしたご予算感も共有いただけるとスムーズです。
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card reveal hover-target" style="background:#FFFDE7;">
+                <div class="pricing-badge">SHORT</div>
+                <h3 class="pricing-title">ショート動画プラン</h3>
+                <p class="pricing-price">¥80,000〜 / 1本</p>
+                <ul class="pricing-list">
+                    <li>15〜30秒程度のショート動画</li>
+                    <li>企画・構成・編集・テロップ込み</li>
+                    <li>サムネイル画像 1点</li>
+                </ul>
+                <p class="pricing-note">
+                    3本〜のまとめ制作で、ボリュームディスカウントも可能です。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#E1F5FE; transition-delay:0.05s;">
+                <div class="pricing-badge" style="background:var(--cyan);">BRAND</div>
+                <h3 class="pricing-title">ブランド / サービス紹介動画</h3>
+                <p class="pricing-price">¥250,000〜</p>
+                <ul class="pricing-list">
+                    <li>60〜120秒程度の紹介動画</li>
+                    <li>企画・シナリオ・アニメーション</li>
+                    <li>簡易ナレーション or テキストベース</li>
+                </ul>
+                <p class="pricing-note">
+                    撮影を伴う場合は、別途お見積もりとなります。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#F3E5F5; transition-delay:0.1s;">
+                <div class="pricing-badge" style="background:var(--purple);">PACKAGE</div>
+                <h3 class="pricing-title">ショート動画まとめ制作</h3>
+                <p class="pricing-price">¥300,000〜</p>
+                <ul class="pricing-list">
+                    <li>ショート動画 5本〜のパッケージ</li>
+                    <li>共通の世界観でシリーズ化</li>
+                    <li>テンプレ化し、内製運用しやすい形に</li>
+                </ul>
+                <p class="pricing-note">
+                    SNS運用とセットでご依頼いただくことも可能です。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CSR MINI -->
+    <section class="csr-mini">
+        <div class="csr-mini-inner">
+            <div class="csr-mini-text">
+                <strong>撮って終わり、作って終わり、にしないために。</strong><br>
+                動画は作った後、「どこで」「どう見せるか」がとても大事です。<br>
+                Webサイト / LP / SNS / 広告など、活用のシーンも踏まえた設計を一緒に考えます。
+            </div>
+            <div class="csr-mini-emoji">🔁</div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contact" class="cta-section">
+        <div class="cta-inner reveal">
+            <h2 class="cta-title">こんな動画、つくってみませんか？</h2>
+            <p class="cta-text">
+                「○○のサービス紹介をショート動画にしたい」「採用イベントに流すループ動画がほしい」など、<br>
+                ざっくりした一言だけでも大丈夫です。<br>
+                想定している尺・本数・使う場所などをお伺いし、<br>
+                それに合わせた構成とお見積もりをご提案します。
+            </p>
+            <a href="#" class="btn hover-target">CONTACT FORM へ</a>
+        </div>
+    </section>
+
+    <footer>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">LET'S MAKE IT MOVE.</h2>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | Web Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* カスタムカーソル */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        /* ローディング */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--yellow);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            text-transform: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--cyan);
+            border: 2px solid var(--black);
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 var(--black);
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none;
+        }
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        .sub-hero-wrapper {
+            padding: 40px 20px 20px;
+        }
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto 10px auto;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .breadcrumb span {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 10px;
+            box-shadow: 3px 3px 0 var(--black);
+        }
+
+        .sub-hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sub-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.02),
+                rgba(0, 0, 0, 0.02) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            pointer-events: none;
+        }
+        .sub-hero-main {
+            position: relative;
+            z-index: 1;
+        }
+        .sub-hero-kicker {
+            display: inline-block;
+            background: var(--pink);
+            color: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 16px;
+        }
+        .sub-hero-title {
+            font-size: 3rem;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .sub-hero-title span {
+            display: inline-block;
+            background: var(--yellow);
+            padding: 4px 8px;
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 var(--black);
+            margin-bottom: 0.3em;
+        }
+        .sub-hero-lead {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .sub-hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .sub-hero-side {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .sub-hero-badge {
+            background: var(--cyan);
+            border: var(--border);
+            padding: 6px 14px;
+            font-weight: 700;
+            transform: rotate(4deg);
+            box-shadow: var(--shadow);
+        }
+        .sub-hero-note {
+            font-size: 0.9rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 260px;
+        }
+        .sub-hero-emoji img {
+            display: block;
+            width: 420px;
+            max-width: 100%;
+            height: auto;
+        }
+        .sub-hero-emoji {
+            font-size: 4rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            transform: rotate(-8deg);
+        }
+
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-label {
+            display: inline-block;
+            background: var(--lime);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 8px 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(1deg);
+        }
+        .section-lead {
+            margin-top: 16px;
+            font-size: 1rem;
+            max-width: 640px;
+            line-height: 1.8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.05) 10px,
+                rgba(0,0,0,0.05) 20px
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .card-list {
+            margin: 12px 0 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        .layout-split {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .note-box {
+            background: var(--white);
+            border: var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .process-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-left: 3px dashed var(--black);
+        }
+        .process-item {
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+        .process-dot {
+            position: absolute;
+            left: -9px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--pink);
+            border: 3px solid var(--black);
+        }
+        .process-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .process-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .pricing-card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            right: 16px;
+            background: var(--purple);
+            border: 2px solid var(--black);
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(5deg);
+            color: var(--white);
+        }
+        .pricing-title {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .pricing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .pricing-note {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        .pricing-list {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            padding: 80px 20px 100px;
+        }
+        .cta-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black);
+            color: var(--white);
+            border: 3px solid var(--white);
+            box-shadow: 10px 10px 0 var(--black);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .cta-inner::after {
+            content: "PLAYFUL WEB DESIGN";
+            position: absolute;
+            top: -18px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--black);
+        }
+        .cta-title {
+            font-size: 2.3rem;
+            margin-bottom: 12px;
+        }
+        .cta-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        @keyframes pulse { to { opacity: 0.5; } }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .sub-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sub-hero-side {
+                align-items: flex-start;
+            }
+            .layout-split {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .sub-hero-title {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 60px 16px;
+            }
+            .cta-inner {
+                padding: 32px 20px;
+            }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">BOOTING WEB EXPERIMENT...</div>
+    </div>
+
+    <header>
+        <div class="logo hover-target">iNK PRODUCTION</div>
+        <nav>
+            <a href="index.html" class="nav-link hover-target">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target active">WEB DESIGN</a>
+            <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target">SNS</a>
+        </nav>
+        <a href="contact.html" class="btn hover-target">CONTACT</a>
+    </header>
+
+    <div class="sub-hero-wrapper">
+        <div class="breadcrumb">
+            <span>TOP &gt; SERVICES &gt; WEB DESIGN</span>
+        </div>
+
+        <section class="sub-hero reveal">
+            <div class="sub-hero-main">
+                <div class="sub-hero-kicker">SERVICE DETAIL</div>
+                <h1 class="sub-hero-title">
+                    <span>WEB DESIGN</span><br>
+                    THAT MAKES PEOPLE COME BACK.
+                </h1>
+                <p class="sub-hero-lead">
+                    「一度見たら忘れない」「つい何度もスクロールしてしまう」<br>
+                    そんな体験を、Webサイトというキャンバスでつくります。<br>
+                    コーポレートサイトからLP、サービスサイトまで。<br>
+                    デザインと動きを掛け合わせて、記憶に残るWebを設計します。
+                </p>
+                <div class="sub-hero-tags">
+                    <div class="pill"><span>💻</span> コーポレートサイト</div>
+                    <div class="pill"><span>🌀</span> スクロール演出</div>
+                    <div class="pill"><span>📱</span> スマホファースト</div>
+                    <div class="pill"><span>🧪</span> コンセプトメイク</div>
+                </div>
+                <a href="#contact" class="btn hover-target">Web制作の相談をする</a>
+            </div>
+            <div class="sub-hero-side">
+                <div class="sub-hero-badge">
+                    FUN × USABILITY × BRAND
+                </div>
+                <div class="sub-hero-emoji">
+                    <img src="img/web/web.png" alt="Web Design Illustration">
+                </div>                
+                <div class="sub-hero-note">
+                    「ちゃんと伝わる」と「ちょっと遊んでる」。<br>
+                    その両立を目指して設計していきます。
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WHAT WE DO -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">WHAT WE DO</div>
+            <h2 class="section-title">このWEBでできること</h2>
+            <p class="section-lead">
+                企業やサービスの「らしさ」を、ビジュアルと体験で翻訳します。<br>
+                ただ情報を並べるだけではなく、ストーリーとして伝わる構成をつくることで、<br>
+                見た人の記憶に残るWebサイトをご提案します。
+            </p>
+        </div>
+
+        <div class="grid">
+            <article class="card reveal hover-target" style="background-color:#E0F7FA;">
+                <div class="card-tag">01 CORPORATE</div>
+                <h3 class="card-title">コーポレートサイト</h3>
+                <div class="card-body">
+                    会社の「人格」を Web 上に立ち上げます。<br>
+                    採用・営業・ブランド、それぞれの目的に沿った導線設計を行います。
+                    <ul class="card-list">
+                        <li>トップ・事業紹介・採用情報などの構成設計</li>
+                        <li>ブランドトーンに合わせたビジュアルデザイン</li>
+                        <li>CMS（WordPress / Headless）連携も相談可能</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#FFF3E0;">
+                <div class="card-tag">02 SERVICE / LP</div>
+                <h3 class="card-title">サービスサイト / LP</h3>
+                <div class="card-body">
+                    1ページで、サービスの魅力と価値を伝え切るページを設計します。<br>
+                    ファーストビューからCVまで、情報と感情の両面を意識します。
+                    <ul class="card-list">
+                        <li>訴求ポイントを整理したライティングサポート</li>
+                        <li>スクロールアニメーション・モーションの設計</li>
+                        <li>問い合わせ・資料DL などの導線最適化</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#F3E5F5;">
+                <div class="card-tag">03 MEDIA</div>
+                <h3 class="card-title">オウンドメディア / ブログ</h3>
+                <div class="card-body">
+                    継続的な情報発信のための土台を用意します。<br>
+                    読みやすさ・回遊性・更新しやすさを重視した設計です。
+                    <ul class="card-list">
+                        <li>カテゴリ設計・タグ設計</li>
+                        <li>関連記事・人気記事などの回遊導線</li>
+                        <li>編集部の運用フローを踏まえたUI設計</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#F1F8E9;">
+                <div class="card-tag">04 PROTOTYPE</div>
+                <h3 class="card-title">プロトタイプ / 実験サイト</h3>
+                <div class="card-body">
+                    新規事業やキャンペーンで、「まずは試したい」ための実験的なWebも大歓迎です。<br>
+                    小さく作って、大きく学べる構成を一緒に考えます。
+                    <ul class="card-list">
+                        <li>コンセプトサイト / 特設サイト</li>
+                        <li>縦スクロールで魅せる1ページサイト</li>
+                        <li>将来的な拡張を見据えた情報設計</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- UX / STRUCTURE -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--purple); color:#fff;">UX & STRUCTURE</div>
+            <h2 class="section-title">デザインより前に、構造を設計する</h2>
+        </div>
+
+        <div class="layout-split">
+            <div class="note-box reveal">
+                <p>
+                    「かっこいいサイト」を作る前に、<strong>「どんな人が」「何を知りたくて」「最終的にどう動いてほしいか」</strong> を整理します。<br><br>
+                    そのうえで、ページ構成・導線・コンポーネントを設計し、<br>
+                    デザインとモーションでそれらを補強していくスタイルです。
+                </p>
+                <p style="margin-top: 12px;">
+                    単発のサイト制作ではなく、<br>
+                    将来的なページ追加やリニューアルも見越した設計を心がけています。
+                </p>
+            </div>
+
+            <div class="note-box reveal" style="background:#E8F5E9;">
+                <p><strong>よく一緒に考えるポイント例</strong></p>
+                <ul class="card-list">
+                    <li>誰にとっての、どんな「はじめの一歩」になるサイトか？</li>
+                    <li>問い合わせまでの「抵抗ポイント」はどこにありそうか？</li>
+                    <li>採用情報やSNSなど、他チャネルとのつながりをどう設計するか？</li>
+                    <li>更新頻度はどのくらいか？誰が更新するか？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--cyan);">PROCESS</div>
+            <h2 class="section-title">制作のながれ</h2>
+        </div>
+
+        <div class="layout-split">
+            <div>
+                <ol class="process-list">
+                    <li class="process-item reveal">
+                        <div class="process-dot"></div>
+                        <div class="process-title">01. ヒアリング / 現状の棚卸し</div>
+                        <p class="process-desc">
+                            目的・ターゲット・競合・既存サイトなどを一緒に確認しながら、<br>
+                            「サイトに何をさせたいか」を言語化していきます。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.05s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">02. 情報設計 / ワイヤーフレーム</div>
+                        <p class="process-desc">
+                            ページ構成・ブロックの並び・導線の流れをワイヤーフレームでご提案。<br>
+                            この時点でテキストの素案も一緒に検討します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.1s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">03. デザイン / モーション設計</div>
+                        <p class="process-desc">
+                            ブランドトーンに合わせてデザインを制作。<br>
+                            同時に、スクロールアニメーションやホバーエフェクトなどの演出も設計します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.15s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">04. 実装 / テスト</div>
+                        <p class="process-desc">
+                            PC / タブレット / スマホでの表示を確認しながらコーディング。<br>
+                            フォームや計測タグの実装も行います。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.2s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">05. 公開 / 運用サポート</div>
+                        <p class="process-desc">
+                            公開後、簡易な修正や追加なども含めて数週間伴走することが多いです。<br>
+                            アクセス解析ツールの導入もご相談ください。
+                        </p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="note-box reveal">
+                <p>
+                    Webサイトは「作って終わり」ではなく、<br>
+                    リリース後に育てていくプロダクトだと考えています。<br><br>
+                    そのため、<strong>運用フェーズを見据えた構成・CMS選定</strong>も、<br>
+                    初期の段階から一緒に検討させていただきます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--yellow);">PRICING</div>
+            <h2 class="section-title">料金の目安</h2>
+            <p class="section-lead">
+                ページ数・アニメーション量・CMS有無などで変動します。<br>
+                まずはざっくりとしたご予算レンジを教えていただければ、<br>
+                その範囲でできるプランをご提案します。
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card reveal hover-target" style="background:#E0F7FA;">
+                <div class="pricing-badge">SIMPLE</div>
+                <h3 class="pricing-title">シンプルLPプラン</h3>
+                <p class="pricing-price">¥250,000〜</p>
+                <ul class="pricing-list">
+                    <li>1ページ構成（LPタイプ）</li>
+                    <li>ワイヤー・デザイン・実装</li>
+                    <li>軽めのスクロールアニメーション</li>
+                </ul>
+                <p class="pricing-note">
+                    キャンペーンページ / 採用LP などに向いたプランです。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#FFF3E0; transition-delay:0.05s;">
+                <div class="pricing-badge" style="background:var(--pink);">STANDARD</div>
+                <h3 class="pricing-title">コーポレートサイトプラン</h3>
+                <p class="pricing-price">¥600,000〜</p>
+                <ul class="pricing-list">
+                    <li>5〜7ページ程度</li>
+                    <li>情報設計〜デザイン〜実装まで一式</li>
+                    <li>採用・事業紹介・お問い合わせフォームなど</li>
+                </ul>
+                <p class="pricing-note">
+                    CMS導入や多言語対応などは別途ご相談となります。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#F3E5F5; transition-delay:0.1s;">
+                <div class="pricing-badge" style="background:var(--purple);">CUSTOM</div>
+                <h3 class="pricing-title">フルカスタムプラン</h3>
+                <p class="pricing-price">¥900,000〜</p>
+                <ul class="pricing-list">
+                    <li>アニメーション強めのブランドサイト</li>
+                    <li>ヘッドレスCMS + Jamstack構成など</li>
+                    <li>要件整理から一緒に入るプラン</li>
+                </ul>
+                <p class="pricing-note">
+                    技術スタックや既存システムとの連携も含めて、個別に設計します。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contact" class="cta-section">
+        <div class="cta-inner reveal">
+            <h2 class="cta-title">一緒に「らしい」Webを実験しませんか？</h2>
+            <p class="cta-text">
+                「まずはトップページだけリニューアルしたい」「サービスLPから小さく始めたい」など、<br>
+                フルリニューアルでなくても大歓迎です。<br><br>
+                参考にしているサイトや、今抱えているお悩みを教えていただければ、<br>
+                それに合わせた制作パターンと概算見積もりをご提案します。
+            </p>
+            <a href="#" class="btn hover-target">CONTACT FORM へ</a>
+        </div>
+    </section>
+
+    <footer>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">LET'S DESIGN YOUR PLAYGROUND.</h2>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

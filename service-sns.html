@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iNK PRODUCTION | SNS Creative & Operation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Mochiy+Pop+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F0F0F0;
+            --black: #0f0f0f;
+            --white: #ffffff;
+            --yellow: #FFE800;
+            --pink: #FF4D8C;
+            --cyan: #00F0FF;
+            --lime: #CCFF00;
+            --purple: #9D4EDD;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+            --shadow-hover: 10px 10px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--black) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--black);
+            font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--black);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
+        }
+        .cursor.active {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            mix-blend-mode: difference;
+        }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--cyan);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .loader.hidden {
+            transform: translateY(-100%);
+        }
+        .loader-text {
+            font-family: 'Archivo Black';
+            font-size: 5vw;
+            animation: pulse 0.5s infinite alternate;
+            text-transform: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+        .btn:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--cyan);
+            border: 2px solid var(--black);
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 var(--black);
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        header {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            background: var(--white);
+            border: var(--border);
+            padding: 5px 20px;
+            box-shadow: var(--shadow);
+            text-transform: none;
+        }
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .nav-link {
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+            padding: 8px 14px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0 var(--black);
+            font-size: 0.9rem;
+            transform: rotate(-2deg);
+        }
+        .nav-link.active {
+            background: var(--yellow);
+        }
+
+        .sub-hero-wrapper {
+            padding: 40px 20px 20px;
+        }
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto 10px auto;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .breadcrumb span {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 4px 10px;
+            box-shadow: 3px 3px 0 var(--black);
+        }
+
+        .sub-hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sub-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.02),
+                rgba(0, 0, 0, 0.02) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            pointer-events: none;
+        }
+        .sub-hero-main {
+            position: relative;
+            z-index: 1;
+        }
+        .sub-hero-kicker {
+            display: inline-block;
+            background: var(--cyan);
+            color: var(--black);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 16px;
+        }
+        .sub-hero-title {
+            font-size: 3rem;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+        .sub-hero-title span {
+            display: inline-block;
+            background: var(--yellow);
+            padding: 4px 8px;
+            transform: rotate(-2deg);
+            box-shadow: 4px 4px 0 var(--black);
+            margin-bottom: 0.3em;
+        }
+        .sub-hero-lead {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .sub-hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .sub-hero-side {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .sub-hero-badge {
+            background: var(--pink);
+            border: var(--border);
+            padding: 6px 14px;
+            font-weight: 700;
+            transform: rotate(4deg);
+            box-shadow: var(--shadow);
+        }
+        .sub-hero-note {
+            font-size: 0.9rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 260px;
+        }
+        .sub-hero-emoji {
+            font-size: 4rem;
+            filter: drop-shadow(5px 5px 0 var(--black));
+            transform: rotate(-8deg);
+        }
+
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-label {
+            display: inline-block;
+            background: var(--lime);
+            border: 2px solid var(--black);
+            padding: 4px 12px;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--black);
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            background: var(--white);
+            display: inline-block;
+            padding: 8px 20px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(1deg);
+        }
+        .section-lead {
+            margin-top: 16px;
+            font-size: 1rem;
+            max-width: 640px;
+            line-height: 1.8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.05) 10px,
+                rgba(0,0,0,0.05) 20px
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .card-list {
+            margin: 12px 0 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        .process-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .process-note {
+            background: var(--white);
+            border: var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .process-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-left: 3px dashed var(--black);
+        }
+        .process-item {
+            position: relative;
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+        .process-dot {
+            position: absolute;
+            left: -9px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--cyan);
+            border: 3px solid var(--black);
+        }
+        .process-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .process-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .pricing-card {
+            background: var(--white);
+            border: var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            right: 16px;
+            background: var(--pink);
+            border: 2px solid var(--black);
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(5deg);
+        }
+        .pricing-title {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .pricing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .pricing-note {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        .pricing-list {
+            margin: 0;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            padding: 80px 20px 100px;
+        }
+        .cta-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black);
+            color: var(--white);
+            border: 3px solid var(--white);
+            box-shadow: 10px 10px 0 var(--black);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .cta-inner::after {
+            content: "LET'S GAIN FANS";
+            position: absolute;
+            top: -18px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--yellow);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            color: var(--black);
+        }
+        .cta-title {
+            font-size: 2.3rem;
+            margin-bottom: 12px;
+        }
+        .cta-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .csr-mini {
+            background: var(--lime);
+            border-top: 4px solid var(--black);
+            border-bottom: 4px solid var(--black);
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+        .csr-mini-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .csr-mini-text {
+            max-width: 640px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .csr-mini-emoji {
+            font-size: 3rem;
+            filter: drop-shadow(3px 3px 0 var(--black));
+        }
+
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        @keyframes pulse { to { opacity: 0.5; } }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* マーケター紹介セクション */
+        .marketer-section {
+            background: rgba(255,255,255,0.95);
+        }
+        .marketer-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: 40px;
+            align-items: center;
+        }
+        .marketer-profile {
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 28px 24px;
+            position: relative;
+        }
+        .marketer-badge {
+            position: absolute;
+            top: -14px;
+            left: 16px;
+            padding: 4px 12px;
+            background: var(--pink);
+            border: 2px solid var(--black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+        }
+        .marketer-name {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .marketer-role {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 2px solid var(--black);
+            background: var(--yellow);
+            margin-bottom: 14px;
+        }
+        .marketer-body {
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+        .marketer-highlights {
+            margin-top: 14px;
+            padding-left: 1.1rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        .marketer-note {
+            margin-top: 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .marketer-photo {
+            text-align: center;
+        }
+        .marketer-photo-inner {
+            display: inline-block;
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 10px;
+            transform: rotate(2deg);
+        }
+        .marketer-photo-inner img {
+            display: block;
+            width: 260px;
+            max-width: 100%;
+            height: auto;
+        }
+        .marketer-photo-caption {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .sub-hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sub-hero-side {
+                align-items: flex-start;
+            }
+            .process-wrapper {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .marketer-wrapper {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .marketer-photo-inner {
+                transform: rotate(0deg);
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .sub-hero-title {
+                font-size: 2.2rem;
+            }
+            .section {
+                padding: 60px 16px;
+            }
+            .cta-inner {
+                padding: 32px 20px;
+            }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader">
+        <div class="loader-text">iNK PRODUCTION</div>
+        <div style="margin-top:20px; font-weight:bold;">BOOTING SNS LAB...</div>
+    </div>
+
+    <header>
+        <div class="logo hover-target">iNK PRODUCTION</div>
+        <nav>
+            <a href="index.html" class="nav-link hover-target">TOP</a>
+            <a href="service-web.html" class="nav-link hover-target">WEB DESIGN</a>
+            <a href="service-solution.html" class="nav-link hover-target">SOLUTION</a>
+            <a href="service-video.html" class="nav-link hover-target">VIDEO</a>
+            <a href="service-sns.html" class="nav-link hover-target active">SNS</a>
+        </nav>
+        <a href="contact.html" class="btn hover-target">CONTACT</a>
+    </header>
+
+    <div class="sub-hero-wrapper">
+        <div class="breadcrumb">
+            <span>TOP &gt; SERVICES &gt; SNS</span>
+        </div>
+
+        <section class="sub-hero reveal">
+            <div class="sub-hero-main">
+                <div class="sub-hero-kicker">SERVICE DETAIL</div>
+                <h1 class="sub-hero-title">
+                    <span>SNS CREATIVE</span><br>
+                    THAT TURNS VIEWS INTO FANS.
+                </h1>
+                <p class="sub-hero-lead">
+                    「なんとなく毎日投稿」から卒業して、<br>
+                    ちゃんと世界観が伝わるアカウントへ。<br>
+                    Instagram / TikTok / X など、目的に合わせたSNSの「見せ方」と「続け方」を、一緒に設計します。
+                </p>
+                <div class="sub-hero-tags">
+                    <div class="pill"><span>📱</span> Instagram / TikTok</div>
+                    <div class="pill"><span>🧭</span> コンセプト設計</div>
+                    <div class="pill"><span>🧩</span> 投稿フォーマット設計</div>
+                    <div class="pill"><span>📈</span> 運用サポート</div>
+                </div>
+                <a href="#contact" class="btn hover-target">SNS運用の相談をする</a>
+            </div>
+            <div class="sub-hero-side">
+                <div class="sub-hero-badge">
+                    FROM “POSTING” TO “COMMUNITY”
+                </div>
+                <div class="sub-hero-emoji">
+                    <img src="img/sns/sns.png" alt="SNS Creative Illustration">
+                </div>
+                <div class="sub-hero-note">
+                    小手先のテクニックではなく、<br>
+                    目的に適したSNS選定から始めます。
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WHAT WE DO -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">WHAT WE DO</div>
+            <h2 class="section-title">このSNSでできること</h2>
+            <p class="section-lead">
+                企画・デザイン・コピー・運用フローの整備まで、アカウントの「土台づくり」をお手伝いします。<br>
+                完全代行ではなく、「社内メンバーでも回せる状態」をゴールに置くことも可能です。
+            </p>
+        </div>
+
+        <div class="grid">
+            <article class="card reveal hover-target" style="background-color:#FFF3E0;">
+                <div class="card-tag">01 STRATEGY</div>
+                <h3 class="card-title">アカウント戦略・コンセプト設計</h3>
+                <div class="card-body">
+                    まずは「誰に」「どう思ってもらいたいか」を整理し、<br>
+                    アカウントの役割と言葉遣いを言語化します。
+                    <ul class="card-list">
+                        <li>競合・参考アカウントのリサーチ</li>
+                        <li>ペルソナ / 目的の整理</li>
+                        <li>アカウントコンセプト・トンマナ設計</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#FCE4EC;">
+                <div class="card-tag">02 CREATIVE</div>
+                <h3 class="card-title">投稿クリエイティブ・コピー制作</h3>
+                <div class="card-body">
+                    世界観を統一するためのビジュアルガイドと、<br>
+                    テンプレ化された投稿フォーマットを用意します。
+                    <ul class="card-list">
+                        <li>フィード / ストーリーズ / リールのデザイン</li>
+                        <li>テンプレート化された投稿パターン</li>
+                        <li>コピー・キャプション案の作成</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#E3F2FD;">
+                <div class="card-tag">03 OPERATION</div>
+                <h3 class="card-title">運用フロー設計・カレンダー作成</h3>
+                <div class="card-body">
+                    「いつ・誰が・何を・どうやって投稿するか」のフローを明確にします。<br>
+                    無理のない更新頻度と役割分担を設計。
+                    <ul class="card-list">
+                        <li>月次の投稿カレンダー作成</li>
+                        <li>運用担当のタスク分解・チェックリスト</li>
+                        <li>効果測定の指標と簡易レポートフォーマット</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="card reveal hover-target" style="background-color:#F1F8E9;">
+                <div class="card-tag">04 CONSULTING</div>
+                <h3 class="card-title">伴走型の運用サポート</h3>
+                <div class="card-body">
+                    「全部丸投げ」ではなく、「相談できるパートナー」として継続的にサポートします。
+                    <ul class="card-list">
+                        <li>月次の振り返りミーティング</li>
+                        <li>投稿案へのフィードバック・ブラッシュアップ</li>
+                        <li>新しい施策のアイデア出し・検証設計</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section" style="background:rgba(255,255,255,0.9);">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--cyan);">PROCESS</div>
+            <h2 class="section-title">立ち上げ〜運用のながれ</h2>
+        </div>
+
+        <div class="process-wrapper">
+            <div class="process-note reveal">
+                <p>
+                    「アカウントはあるけど、なんとなく続けているだけ」という状態から、<br>
+                    きちんと意図のある運用へ。<br><br>
+                    3ヶ月〜6ヶ月ほどのスパンで、土台づくり＋改善サイクルを回していきます。
+                </p>
+            </div>
+            <div>
+                <ol class="process-list">
+                    <li class="process-item reveal">
+                        <div class="process-dot"></div>
+                        <div class="process-title">01. 現状分析 / ヒアリング</div>
+                        <p class="process-desc">
+                            既存アカウントの投稿内容・数値を確認し、<br>
+                            現状の課題と「こうなったらいいな」を洗い出します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.05s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">02. コンセプト / 投稿フォーマット設計</div>
+                        <p class="process-desc">
+                            アカウントのコンセプトと言葉遣い、投稿カテゴリーとフォーマットを設計。<br>
+                            見本となる投稿案もセットで用意します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.1s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">03. 投稿カレンダー作成</div>
+                        <p class="process-desc">
+                            1〜3ヶ月分の投稿カレンダーを作成し、<br>
+                            担当者ごとのタスクと締切を明確にします。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.15s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">04. 運用開始 / 伴走</div>
+                        <p class="process-desc">
+                            実際の投稿運用を開始。<br>
+                            必要に応じて、投稿案へのフィードバックや追加クリエイティブを提供します。
+                        </p>
+                    </li>
+                    <li class="process-item reveal" style="transition-delay:0.2s;">
+                        <div class="process-dot"></div>
+                        <div class="process-title">05. 振り返り / 改善サイクル</div>
+                        <p class="process-desc">
+                            月次・四半期単位で数値や反応を振り返り、<br>
+                            コンテンツの方向性・フォーマットをアップデートします。
+                        </p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARKETER -->
+    <section class="section marketer-section">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--pink);">MARKETER</div>
+            <h2 class="section-title">このSNSを伴走するマーケター</h2>
+            <p class="section-lead">
+                現場感のあるマーケターが、数字だけでなく「ファンが増えるかどうか」を軸にSNS運用を設計します。<br>
+                飲食店経営・EC・WEBエンジニアリングで培った経験をベースに、実行まで一緒に走ります。
+            </p>
+        </div>
+
+        <div class="marketer-wrapper">
+            <div class="marketer-profile reveal">
+                <div class="marketer-badge">SNS MARKETER</div>
+                <h3 class="marketer-name">永井 悦信</h3>
+                <div class="marketer-role">マーケター / 伴走パートナー</div>
+                <p class="marketer-body">
+                    飲食店経営で培った「現場視点」と、自身のEC販売・WEBエンジニアとしての知見を掛け合わせ、
+                    さまざまな業界のSNS・デジタル施策を伴走するマーケター。
+                    認知・売上・ブランディング・AI活用まで、ゴールに合わせて最適な運用プランを設計します。
+                </p>
+                <ul class="marketer-highlights">
+                    <li>X（旧Twitter）：2週間でLTV換算 約1.2億円相当の新規会員獲得</li>
+                    <li>TikTok：4投稿目で100万再生達成＋4,000フォロワー獲得</li>
+                    <li>TikTok：AI動画のみで1ヶ月・1万人フォロワー達成（最高200万再生/本）</li>
+                    <li>Instagram：初月から売上30万円＋フォロワー4,000人獲得</li>
+                </ul>
+                <p class="marketer-note">
+                    机上の空論ではなく、実際に手を動かしてきた実績をもとに、<br>
+                    あなたのビジネスにフィットするSNS戦略と運用体制をご提案します。
+                </p>
+            </div>
+
+            <div class="marketer-photo reveal" style="transition-delay:0.05s;">
+                <div class="marketer-photo-inner">
+                    <img src="img/sns/sns1.png" alt="永井悦信のプロフィール写真">
+                </div>
+                <div class="marketer-photo-caption">
+                    現場とオンラインをつなぐマーケター
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label" style="background:var(--yellow);">PRICING</div>
+            <h2 class="section-title">料金の目安</h2>
+            <p class="section-lead">
+                フル代行ではなく、「立ち上げ＋伴走」を前提とした料金イメージです。<br>
+                投稿本数やミーティング頻度によって調整可能です。
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="pricing-card reveal hover-target" style="background:#FFFDE7;">
+                <div class="pricing-badge">STARTER</div>
+                <h3 class="pricing-title">アカウント設計パック</h3>
+                <p class="pricing-price">¥150,000〜</p>
+                <ul class="pricing-list">
+                    <li>コンセプト・トンマナ設計</li>
+                    <li>投稿フォーマット 3〜5パターン</li>
+                    <li>投稿サンプル・ガイドラインPDF</li>
+                </ul>
+                <p class="pricing-note">
+                    まずは土台だけ整えたい、という場合に。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#FCE4EC; transition-delay:0.05s;">
+                <div class="pricing-badge" style="background:var(--pink);">MONTHLY</div>
+                <h3 class="pricing-title">月次伴走プラン</h3>
+                <p class="pricing-price">¥200,000〜 / 月</p>
+                <ul class="pricing-list">
+                    <li>月4〜8本分のクリエイティブ制作</li>
+                    <li>月1回の振り返りミーティング</li>
+                    <li>投稿案へのフィードバック・改善提案</li>
+                </ul>
+                <p class="pricing-note">
+                    社内運用＋外部パートナーという形で進めたい場合に。
+                </p>
+            </div>
+
+            <div class="pricing-card reveal hover-target" style="background:#E3F2FD; transition-delay:0.1s;">
+                <div class="pricing-badge" style="background:var(--cyan);">CAMPAIGN</div>
+                <h3 class="pricing-title">キャンペーン集中プラン</h3>
+                <p class="pricing-price">¥300,000〜</p>
+                <ul class="pricing-list">
+                    <li>1〜2ヶ月限定キャンペーンの企画・クリエイティブ</li>
+                    <li>キャンペーン期間中の投稿設計</li>
+                    <li>簡易レポート・次回改善の提案</li>
+                </ul>
+                <p class="pricing-note">
+                    リリース / イベント / 採用強化などのタイミングに。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 一言 -->
+    <section class="csr-mini">
+        <div class="csr-mini-inner">
+            <div class="csr-mini-text">
+                <strong>「フォロワー数」だけじゃなく、「関係性」を増やしたい。」</strong><br>
+                数だけを追いかけて疲弊しないように、<br>
+                続けやすさと楽しさも、ちゃんと設計に含めていきます。
+            </div>
+            <div class="csr-mini-emoji">🤝</div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contact" class="cta-section">
+        <div class="cta-inner reveal">
+            <h2 class="cta-title">どのSNSから整えていきますか？</h2>
+            <p class="cta-text">
+                「このアカウントを伸ばしたい」「このプロジェクト専用でアカウントを作りたい」など、<br>
+                ざっくりした状態でも大丈夫です。<br>
+                まずは今のURLを送っていただければ、簡単な所感と方針案をお返しします。
+            </p>
+            <a href="#" class="btn hover-target">CONTACT FORM へ</a>
+        </div>
+    </section>
+
+    <footer>
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">LET'S TURN VIEWS INTO FANS.</h2>
+        <p>© 2024 iNK PRODUCTION Inc.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        const cursor = document.querySelector('.cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>

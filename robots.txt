@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://inkproduction1400-bot.github.io/INKSITE/sitemap.xml

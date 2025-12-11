@@ -749,6 +749,207 @@
     align-items: flex-start;
   }
 }
+/* ========= タブレット共通（PCデザインそのまま＋少し緩める） ========= */
+@media (max-width: 1024px) {
+  header {
+    flex-wrap: wrap;
+  }
+
+  nav {
+    justify-content: flex-start;
+  }
+}
+
+/* ========= スマホ向けレイアウト（サイト全体の調整） ========= */
+@media (max-width: 768px) {
+  /* ヘッダー周りを縦並びにして詰まり感をなくす */
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 16px;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+    box-shadow: 4px 4px 0 var(--black);
+  }
+
+  nav {
+    width: 100%;
+    row-gap: 8px;
+  }
+
+  .nav-link {
+    transform: rotate(0deg);
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    box-shadow: 2px 2px 0 var(--black);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  /* ヒーローエリアを縦長スマホ前提に圧縮 */
+  .hero {
+    min-height: auto;
+    padding: 40px 16px 56px;
+  }
+
+  .hero h1 {
+    font-size: 2.6rem;
+    line-height: 1.15;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    margin-top: 12px !important;
+  }
+
+  /* 背景のフロート図形は邪魔にならないよう縮小 or 非表示 */
+  .shape-1,
+  .shape-2,
+  .shape-3 {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+
+  /* 無限スクロール帯は傾きをやめて横スクロール防止 */
+  .marquee-container {
+    transform: none;
+    margin: 24px 0;
+    padding: 14px 0;
+  }
+
+  .marquee-content {
+    font-size: 1.8rem;
+  }
+
+  /* セクション全体の余白をスマホ向けに */
+  .section {
+    padding: 56px 16px;
+  }
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 2.4rem;
+    padding: 8px 18px;
+    box-shadow: 4px 4px 0 var(--black);
+  }
+
+  /* カードレイアウト（カードは1列表示） */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    padding: 22px 18px 22px;
+    margin: 0 auto;
+    max-width: 100%;
+    /* PC の「右側アイコン用 padding-right:120px;」を打ち消す */
+    padding-right: 18px;
+  }
+
+  /* スマホではアイコンをテキストの右側に“普通に置く” */
+  .card-icon {
+    position: static;
+    width: 56px;
+    height: 56px;
+    margin-left: auto;   /* タイトル右寄りに寄せる */
+    margin-bottom: 6px;
+  }
+
+  .card-icon img {
+    width: 100%;
+    height: auto;
+  }
+
+  .card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .card .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  /* CSR・科学教室エリア */
+  .csr-wrapper {
+    padding: 56px 16px;
+  }
+
+  .csr-container {
+    flex-direction: column-reverse;
+    gap: 28px;
+  }
+
+  .science-box {
+    padding: 28px 18px;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.8);
+  }
+
+  .science-box h2 {
+    font-size: 2.1rem;
+  }
+
+  .science-box p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .science-emoji {
+    font-size: 5.5rem;
+  }
+
+  /* フッター */
+  footer {
+    padding: 32px 16px !important;
+  }
+
+  footer h2 {
+    font-size: 2rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+  }
+
+  /* スマホではカスタムカーソルはオフでOK */
+  .cursor {
+    display: none;
+  }
+}
+
+/* さらに小さい端末向けの微調整（必要なら） */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 2.1rem;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
     </style>
     <script type="application/ld+json">
         {
